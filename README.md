@@ -90,36 +90,6 @@ I can only make something like this because I'm building on FOSS software myself
 Linux, Go, Fyne… I can go on for days. And for these gifts, I feel enticed to give something back.
 And that is Cadenza. 
 
----
-
-Now, where am I in development, and what's been my journey?
-
-Well, I started creating Cadenza in Go, because of its simplicity and development speed. I figured
-that it's basically the only way I'll actually have a chance against the teams of devs that
-MuseScore, Sibelius and Dorico have. I picked Fyne for the GUI, and was quite content.
-
-However, I found myself hating Go's allergy to new features, and found that the pattern of
-interfaces and iotas was driving me nuts. I looked over to the other side of the pond, and saw Rust.
-
-Rust offered proper enums, and ones that can actually contain data! I found myself thinking
-"*I **need** it.*" I then thought about maybe making CDNZ (Cadenza's music file format) in Rust,
-and maybe using some kind of bridge to have them talk to one another. Then I found out about the
-woes of CGO, and decided that enough is enough, and I switched my whole project to Rust.
-
-Oh what a silly mistake.
-
-I started by learning Rust, and I found that the book was quite helpful. I learnt about all of the
-great features of Rust, and I was agreeing with the book each step of the way. But I also wanted to
-actually work on Cadenza. So I did. Fast forward a few weeks and stressful school days, and I found
-myself surrounded by roadblocks. I could not do it. Rust was too complex.
-
-That was the breaking point. And I decided to come back to Go.
-
-It is currently 2026-04-05, 12:00, and I'm working on rewriting my Rust code in Go. A sentence you
-would probably assume is backwards, if you've seen the headlines.
-
-Progress is steady. I wish you a nice day!
-
 ## Licensing
 
 Copyright © 2026 Twilit Jack
