@@ -4,7 +4,7 @@
 # Cadenza
 
 Cadenza is an up-and-coming [free][Free Software] music notation editor, featuring
-[Helix][Helix]-like music input, written in Go, based on [LilyPond][LilyPond].
+[Helix][Helix]-like music input, made in Godot, based on [LilyPond][LilyPond].
 
 It is meant to be an alternative to the paid options like Sibelius and Dorico, and
 subsciption-ridden MuseScore. Furthermore, it will offer a Helix-like input mode which might be
