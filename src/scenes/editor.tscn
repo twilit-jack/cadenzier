@@ -1,0 +1,92 @@
+[gd_scene format=3 uid="uid://7y4cuis511v1"]
+
+[ext_resource type="Script" uid="uid://bnhn2ju72b7hh" path="res://scripts/editor/statusbar.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://5rlumq1bmqis" path="res://scripts/editor/input_handler.gd" id="3_q68jb"]
+[ext_resource type="Script" uid="uid://wr478b7sk81q" path="res://scripts/editor/state.gd" id="4_xg7d5"]
+
+[node name="Editor" type="Control" unique_id=1034191156]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="ColorRect" parent="." unique_id=1978537236]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.017732391, 0.017732391, 0.01773239, 1)
+
+[node name="MainUI" type="VBoxContainer" parent="." unique_id=77681154]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Viewport" type="TabContainer" parent="MainUI" unique_id=760630817]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="ViewportScrollCont" type="ScrollContainer" parent="MainUI/Viewport" unique_id=1974205328]
+layout_mode = 2
+size_flags_vertical = 3
+metadata/_tab_index = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="MainUI/Viewport/ViewportScrollCont" unique_id=1450477336]
+layout_mode = 2
+
+[node name="Page" type="TextureRect" parent="MainUI/Viewport/ViewportScrollCont/PanelContainer" unique_id=2136488300]
+layout_mode = 2
+
+[node name="Statusbar" type="HBoxContainer" parent="MainUI" unique_id=1369628510]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 8
+script = ExtResource("1_o5qli")
+
+[node name="LeftMargin" type="Control" parent="MainUI/Statusbar" unique_id=1573199326]
+layout_mode = 2
+
+[node name="ModeIndicator" type="Label" parent="MainUI/Statusbar" unique_id=538958046]
+layout_mode = 2
+text = "NOR"
+
+[node name="Spacer" type="Control" parent="MainUI/Statusbar" unique_id=202555638]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectionCount" type="Label" parent="MainUI/Statusbar" unique_id=2142352954]
+layout_mode = 2
+text = "1 sel"
+
+[node name="LineNumber" type="Label" parent="MainUI/Statusbar" unique_id=1536840342]
+layout_mode = 2
+text = "1:1"
+
+[node name="RightMargin" type="Control" parent="MainUI/Statusbar" unique_id=529322192]
+layout_mode = 2
+
+[node name="LogLine" type="Label" parent="MainUI" unique_id=1312818809]
+layout_mode = 2
+
+[node name="InputArea" type="LineEdit" parent="MainUI" unique_id=1682777637]
+visible = false
+layout_mode = 2
+
+[node name="InputHandler" type="Node" parent="." unique_id=1395562387]
+script = ExtResource("3_q68jb")
+
+[node name="State" type="Node" parent="." unique_id=1853213729]
+unique_name_in_owner = true
+script = ExtResource("4_xg7d5")
