@@ -15,7 +15,7 @@ config/description="A keyboard-centric music notation editor based on LilyPond."
 run/main_scene="uid://7y4cuis511v1"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 run/low_processor_mode=true
-config/icon="uid://ck0ytmp5mbbw3"
+config/icon="uid://cydydiogcl43t"
 
 [autoload]
 
