@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bq3huk364skd3"]
+
+[ext_resource type="Script" uid="uid://pqia2bikhiec" path="res://settings.gd" id="1_0fbet"]
+
+[node name="SettingsWindow" type="Window" unique_id=217325854]
+oversampling_override = 1.0
+title = "Cadenza Settings"
+initial_position = 1
+size = Vector2i(996, 540)
+
+[node name="Settings" type="TabContainer" parent="." unique_id=1608693775]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+current_tab = 0
+script = ExtResource("1_0fbet")
+
+[node name="GridContainer" type="GridContainer" parent="Settings" unique_id=1668623229]
+layout_mode = 2
+metadata/_tab_index = 0
