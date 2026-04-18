@@ -2,31 +2,26 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 extends Node2D
 
-@export var zoom_sensitivity := 0.01
+@export var zoom_sensitivity := 0.1
 
 
 func _input(event: InputEvent) -> void:
-	match event:
-		InputEventMouseButton:
-			_handle_zoom(event)
-		InputEventMouseMotion:
-			_handle_pan(event)
+	if event is InputEventMouseButton:
+		_handle_zoom(event)
+	elif event is InputEventMouseMotion:
+		_handle_pan(event)
 
 
 func _handle_zoom(event: InputEventMouseButton) -> void:
-	match event.button_index:
-		MOUSE_BUTTON_WHEEL_UP:
-			$Camera2D.zoom -= Vector2(zoom_sensitivity, zoom_sensitivity)
-		MOUSE_BUTTON_WHEEL_DOWN:
-			$Camera2D.zoom += Vector2(zoom_sensitivity, zoom_sensitivity)
+	if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+		$Camera2D.zoom *= (1.0 + zoom_sensitivity)
+	elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+		$Camera2D.zoom /= (1.0 + zoom_sensitivity)
 
 
 func _handle_pan(event: InputEventMouseMotion) -> void:
-	if not (
-		Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE)
-		or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
-	):
+	if not (Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE)
+		or Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT) ):
 		return
 
-	global_position += event.relative
-	print("Panning: ", event.relative)
+	global_position -= event.relative / $Camera2D.zoom
