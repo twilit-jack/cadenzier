@@ -62,6 +62,7 @@ func _ready() -> void:
 func _build_toggle_item(item: Config.ToggleItem) -> Array[Control]:
 	var label := Label.new()
 	label.text = item.name
+	label.tooltip_text = item.description
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -82,6 +83,7 @@ func _build_toggle_item(item: Config.ToggleItem) -> Array[Control]:
 func _build_slider_item(item: Config.SliderItem) -> Array[Control]:
 	var label := Label.new()
 	label.text = item.name
+	label.tooltip_text = item.description
 
 	var indicator := Label.new()
 	indicator.text = str(item.value)
@@ -107,6 +109,7 @@ func _build_slider_item(item: Config.SliderItem) -> Array[Control]:
 func _build_option_item(item: Config.OptionItem) -> Array[Control]:
 	var label := Label.new()
 	label.text = item.name
+	label.tooltip_text = item.description
 
 	var option_button := OptionButton.new()
 	option_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
