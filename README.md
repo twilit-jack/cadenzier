@@ -103,7 +103,7 @@ BY-NC-SA 4.0 license][CC BY-NC-SA 4.0]. You're free to use the assets as long as
 [terms][CC BY-NC-SA 4.0] of the CC BY-NC-SA 4.0. 
 
 If you have any questions about Cadenza or using it in different contexts, feel free to message me
-on Codeberg (twilit_jack) or Matrix (@twilit.jack:matrix.org).
+on Codeberg (twilit-jack) or Matrix (@twilit.jack:matrix.org).
 
 
 [Free Software]: https://www.gnu.org/philosophy/free-sw.html
