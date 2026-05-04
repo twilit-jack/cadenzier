@@ -13,17 +13,15 @@ LilyPond code using this lib. Cadenza can also convert it to LilyPond and then P
 
 This crate also partly functions as the specification of the CDNZ format.
 
-The gist is:
-- There are two types of files: `.cdnz` and `.cdnx`.
-	- `.cdnz` is a zstd-compressed tarball, containing:
-		- A `mimetype` file, containing the string "`application/vnd.cadenza.cdnz`".
+In the future, a solid specification will be provided. In the meantime, the Rust documentation will
+have to suffice.
 
 ## License
 
 The CDNZ spec and docs, and this Rust implementation, are both licensed under either of:
 
-* Apache License, Version 2.0 (<https://www.apache.org/licenses/LICENSE-2.0>)
-* MIT license (<https://opensource.org/licenses/MIT>)
+- Apache License, Version 2.0 (<https://www.apache.org/licenses/LICENSE-2.0>)
+- MIT license (<https://opensource.org/licenses/MIT>)
 
 at your option.
 
