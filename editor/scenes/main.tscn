@@ -1,0 +1,205 @@
+[gd_scene format=3 uid="uid://7y4cuis511v1"]
+
+[ext_resource type="PackedScene" uid="uid://ylunm3qh3k3p" path="res://scenes/render.tscn" id="1_85g3d"]
+[ext_resource type="PackedScene" uid="uid://djqb1ykhewiip" path="res://scenes/viewport.tscn" id="1_choun"]
+[ext_resource type="FontFile" uid="uid://b4ymrtdu6cxat" path="res://assets/iosevka_nerd_font_regular.ttf" id="2_choun"]
+[ext_resource type="Script" uid="uid://n8ser5pdimiq" path="res://resources/editor/lilypond_code_highlighter.gd" id="3_ya4ey"]
+[ext_resource type="Script" uid="uid://dn8yiqyosk4sv" path="res://scripts/main/docs_viewer.gd" id="4_eb6dy"]
+[ext_resource type="PackedScene" uid="uid://dou2xix7nvw3k" path="res://scenes/side_panel.tscn" id="5_trceg"]
+[ext_resource type="Script" uid="uid://bnhn2ju72b7hh" path="res://scripts/main/statusbar.gd" id="6_a8y0u"]
+[ext_resource type="Script" uid="uid://wr478b7sk81q" path="res://scripts/main/state.gd" id="7_jkv2x"]
+[ext_resource type="Script" uid="uid://k8w8wkpsovtd" path="res://scripts/main/commands.gd" id="8_jbj1t"]
+[ext_resource type="Script" uid="uid://dkpcbmt2lbe8v" path="res://scripts/main/statusbar/mode_indicator.gd" id="8_ya4ey"]
+[ext_resource type="PackedScene" uid="uid://bq3huk364skd3" path="res://scenes/settings.tscn" id="9_eb6dy"]
+[ext_resource type="Script" uid="uid://57cbe7doso1y" path="res://scripts/main/input_handler.gd" id="9_muem4"]
+
+[sub_resource type="CodeHighlighter" id="CodeHighlighter_o435n"]
+number_color = Color(0.67058825, 0.7882353, 1, 1)
+member_keyword_colors = {
+"\\\\version": Color(1, 0.4392157, 0.52156866, 1)
+}
+color_regions = {
+"\" \"": Color(1, 0.92941177, 0.6313726, 1),
+"%": Color(1, 1, 1, 0.5019608),
+"%{ %}": Color(1, 1, 1, 0.5019608)
+}
+script = ExtResource("3_ya4ey")
+
+[node name="Editor" type="Control" unique_id=1275073084]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Background" type="ColorRect" parent="." unique_id=1978537236]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.017732391, 0.017732391, 0.01773239, 1)
+
+[node name="UI" type="VBoxContainer" parent="." unique_id=77681154]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Top" type="HSplitContainer" parent="UI" unique_id=208276207]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 4
+split_offsets = PackedInt32Array(320)
+split_offset = 320
+
+[node name="Content" type="TabContainer" parent="UI/Top" unique_id=760630817]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Viewport" parent="UI/Top/Content" unique_id=1421802436 instance=ExtResource("1_choun")]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="Setup" type="SplitContainer" parent="UI/Top/Content" unique_id=253681192]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+metadata/_tab_index = 1
+
+[node name="BookEditor" type="CodeEdit" parent="UI/Top/Content/Setup" unique_id=1599649120]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_fonts/font = ExtResource("2_choun")
+text = "Book::new({
+	\"header\": {
+		\"title\": \"My nice composition\"
+			.text_size(48)
+			.no_bold(),
+	},
+	\"score\": Score::new(
+		StaffGroup::new(
+			Staff::new(%flute),
+			StaffGroup::new(
+				Staff::new(%trumpet_1),
+				Staff::new(%trumpet_2),
+			),
+		),
+		GrandStaff::new(%piano),
+	),
+})"
+scroll_smooth = true
+scroll_fit_content_height = true
+minimap_draw = true
+syntax_highlighter = SubResource("CodeHighlighter_o435n")
+highlight_current_line = true
+draw_tabs = true
+line_folding = true
+gutters_draw_line_numbers = true
+gutters_draw_fold_gutter = true
+code_completion_enabled = true
+indent_size = 3
+
+[node name="Preview" parent="UI/Top/Content/Setup" unique_id=281541017 instance=ExtResource("1_85g3d")]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Render" parent="UI/Top/Content" unique_id=228951971 instance=ExtResource("1_85g3d")]
+layout_mode = 2
+
+[node name="Help" type="RichTextLabel" parent="UI/Top/Content" unique_id=372049494]
+visible = false
+layout_mode = 2
+bbcode_enabled = true
+script = ExtResource("4_eb6dy")
+metadata/_tab_index = 3
+
+[node name="SidePanel" parent="UI/Top" unique_id=2008855832 instance=ExtResource("5_trceg")]
+layout_mode = 2
+
+[node name="Footer" type="MarginContainer" parent="UI" unique_id=824386253]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="FooterHBox" type="VBoxContainer" parent="UI/Footer" unique_id=1989039093]
+layout_mode = 2
+
+[node name="Statusbar" type="HBoxContainer" parent="UI/Footer/FooterHBox" unique_id=1369628510]
+layout_mode = 2
+theme_override_constants/separation = 8
+script = ExtResource("6_a8y0u")
+
+[node name="ModeIndicator" type="Label" parent="UI/Footer/FooterHBox/Statusbar" unique_id=538958046]
+layout_mode = 2
+text = "NOR"
+script = ExtResource("8_ya4ey")
+
+[node name="Spacer" type="Control" parent="UI/Footer/FooterHBox/Statusbar" unique_id=202555638]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SelectionCount" type="Label" parent="UI/Footer/FooterHBox/Statusbar" unique_id=2142352954]
+layout_mode = 2
+text = "1 sel"
+
+[node name="VSeparator" type="VSeparator" parent="UI/Footer/FooterHBox/Statusbar" unique_id=266357803]
+layout_mode = 2
+
+[node name="LineNumber" type="Label" parent="UI/Footer/FooterHBox/Statusbar" unique_id=1536840342]
+layout_mode = 2
+text = "1:1"
+
+[node name="LogLine" type="Label" parent="UI/Footer/FooterHBox" unique_id=1312818809]
+layout_mode = 2
+text = "Debug text for LogLine."
+
+[node name="InputArea" type="LineEdit" parent="UI/Footer/FooterHBox" unique_id=1682777637]
+visible = false
+layout_mode = 2
+
+[node name="Settings" parent="." unique_id=217325854 instance=ExtResource("9_eb6dy")]
+unique_name_in_owner = true
+visible = false
+
+[node name="ProjectOpenFileDialog" type="FileDialog" parent="." unique_id=412202898]
+unique_name_in_owner = true
+title = "Open a File"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.cdnz.*.cdnx;Cadenza Project Files;application/vnd.cadenza.cdnz,application/vnd.cadenza.cdnx")
+
+[node name="SaveAsFileDialog" type="FileDialog" parent="." unique_id=1882868541]
+unique_name_in_owner = true
+title = "Open a File"
+dialog_hide_on_ok = true
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.cdnz.*.cdnx;Cadenza Project Files;application/vnd.cadenza.cdnz,application/vnd.cadenza.cdnx")
+
+[node name="ErrorDialog" type="AcceptDialog" parent="." unique_id=407253971]
+unique_name_in_owner = true
+title = "Error!"
+
+[node name="State" type="Node" parent="." unique_id=1801823418]
+unique_name_in_owner = true
+script = ExtResource("7_jkv2x")
+
+[node name="Commands" type="Node" parent="." unique_id=2068350950]
+unique_name_in_owner = true
+script = ExtResource("8_jbj1t")
+
+[node name="InputHandler" type="Node" parent="." unique_id=988305953]
+script = ExtResource("9_muem4")

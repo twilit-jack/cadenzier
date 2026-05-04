@@ -11,9 +11,15 @@ subsciption-ridden MuseScore. Furthermore, it will offer a Helix-like input mode
 unconventional for casual composers, but faster to create scores in, and might reach similar
 speeds to the MS-DOS program called [SCORE][SCORE].
 
+## Project status
+
 **Cadenza is currently in early development, and there is little to show yet.** I'm still fleshing
 out the internals, envisioning the UI, and actively developing it. Come back in about 4–12 months
 and Cadenza will probably be something usable. :)
+
+As of May 2026, development is still ongoing. Current goals for the next few months are:
+- Getting Rust-Godot integration sorted.
+- Fleshing out the UI and input design.
 
 ## Licensing
 

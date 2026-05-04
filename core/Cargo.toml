@@ -1,0 +1,13 @@
+[package]
+name = "cadenza_core"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+cdnz = { path = "../cdnz" }
+godot = "0.4.5"
+num = "0.4.3"
+thiserror = "2.0.18"

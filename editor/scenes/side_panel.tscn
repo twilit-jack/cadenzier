@@ -1,0 +1,46 @@
+[gd_scene format=3 uid="uid://dou2xix7nvw3k"]
+
+[node name="SidePanel" type="TabContainer" unique_id=2008855832]
+size_flags_horizontal = 3
+current_tab = 0
+
+[node name="Parts" type="MarginContainer" parent="." unique_id=920871522]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+metadata/_tab_index = 0
+
+[node name="Elements" type="VBoxContainer" parent="Parts" unique_id=1306519128]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Parts/Elements" unique_id=769273453]
+layout_mode = 2
+text = "Parts"
+
+[node name="PartTree" type="Tree" parent="Parts/Elements" unique_id=603182502]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Books" type="MarginContainer" parent="." unique_id=1639211190]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+metadata/_tab_index = 1
+
+[node name="Elements" type="VBoxContainer" parent="Books" unique_id=800329165]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Books/Elements" unique_id=1945177594]
+layout_mode = 2
+text = "Books"
+
+[node name="BookTree" type="Tree" parent="Books/Elements" unique_id=1943194292]
+layout_mode = 2
+size_flags_horizontal = 3

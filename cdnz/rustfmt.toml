@@ -1,0 +1,22 @@
+# I feel someone will likely ask about this (be it politely or not), so I feel a
+# need to clarify the decision behind tab characters over spaces.
+#
+# There are many reasons behind this, sorted here in descending order of
+# importance:
+# 1. Using tabs means that everyone can use their favourite indent width without
+#    arguing about it. You like 4-character-wide indents? So be it. 2-wide? Sure!
+#    3-wide? Absolutely.  
+#    This matters a whole lot more for disabled people, as some may need extreme
+#    sizes like 8-wide or 1-wide. Using tabs allows that.
+# 2. A space indent is 4 bytes. A tab indent is 1. While that might not seem like
+#    that big of a deal, it is. Using tabs instead of spaces can reduce the size
+#    of a file by 5–15%. That means that repo cloning can be sped up by 5–15% by
+#    just using tabs.
+# 3. Navigating through tabs characters is much easier than through space
+#    characters. When using spaces, you might end up in the middle of an indent.
+#    With tabs, your cursor will always be on the left or the right of an indent.
+#    You'll always select a whole indent, not a part of it.
+#
+# That's why I believe tabs are the superior option for indenting, and encourage
+# the use of them everywhere.
+hard_tabs = true
