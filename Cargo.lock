@@ -98,7 +98,7 @@ checksum = "5d20789868f4b01b2f2caec9f5c4e0213b41e3e5702a50157d699ae31ced2fcb"
 name = "cadenza_core"
 version = "0.1.0"
 dependencies = [
- "cdnz",
+ "cdnz 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "godot",
  "num",
  "thiserror",
@@ -119,6 +119,22 @@ dependencies = [
 [[package]]
 name = "cdnz"
 version = "0.1.0"
+dependencies = [
+ "clap",
+ "num",
+ "serde",
+ "serde_json",
+ "serde_with",
+ "tar",
+ "thiserror",
+ "zstd",
+]
+
+[[package]]
+name = "cdnz"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "218330aa17c02ac3cd0517591e6fdf1bd369d2742bba4418e5892e506e44f366"
 dependencies = [
  "clap",
  "num",
