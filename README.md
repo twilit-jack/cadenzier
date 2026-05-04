@@ -21,6 +21,16 @@ As of May 2026, development is still ongoing. Current goals for the next few mon
 - Getting Rust-Godot integration sorted.
 - Fleshing out the UI and input design.
 
+
+## Contributing
+
+Currently, I'm not accepting issues or pull requests, because of nothing being ready. I still have
+my own ideas I want to cement in Cadenza. When I feel that Cadenza becomes actually usable, and I'll
+have put everything mostly in place, I'll enable them, and you'll be able to share your own ideas.
+
+It should also be noted that I'm mostly doing Cadenza as a solo project, and that issues and
+contributions will come second.
+
 ## Licensing
 
 Copyright © 2026 Twilit Jack
