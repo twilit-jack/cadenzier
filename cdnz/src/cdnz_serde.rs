@@ -128,6 +128,13 @@ impl Cdnz {
 		Ok(buffer)
 	}
 
+	/// Serializes `Cdnz` struct to only JSON.
+	///
+	/// Mainly used as a small helper/wrapper for `cadenza_core`.
+	pub fn serialize_json(&self) -> Result<String, CdnzSerError> {
+		Ok(serde_json::to_string_pretty(self)?)
+	}
+
 	/// Deserializes from zstd-compressed CDNZ tarball.
 	pub fn deserialize<R: Read>(reader: R) -> Result<Self, CdnzDeError> {
 		let data_json = Cdnz::deserialize_json(reader)?;

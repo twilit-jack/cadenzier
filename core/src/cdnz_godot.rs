@@ -13,6 +13,16 @@ pub struct CDNZ {}
 
 #[godot_api]
 impl CDNZ {
+	/// Creates a CDNZ or CDNX file as a Dictionary.
+	#[func]
+	fn create_new() -> Variant {
+		let cdnz = cdnz::Cdnz::default();
+		let Ok(json) = cdnz.serialize_json() else {
+			return Error::FAILED.to_variant();
+		};
+		Json::parse_string(&json)
+	}
+
 	/// Loads a CDNZ or CDNX file into a Dictionary.
 	///
 	/// Returns a value from the `Error` enum if an operation failed.
@@ -21,7 +31,7 @@ impl CDNZ {
 		let Ok(bytes) = fs::read(path) else {
 			return Error::ERR_FILE_NOT_FOUND.to_variant();
 		};
-		let json_string = match cdnz::Cdnz::deserialize_json(&bytes[..]) {
+		let json = match cdnz::Cdnz::deserialize_json(&bytes[..]) {
 			Ok(string) => string,
 			Err(CdnzDeError::IoError(_) | CdnzDeError::UpgradeError(_)) => {
 				return Error::FAILED.to_variant();
@@ -33,7 +43,7 @@ impl CDNZ {
 				| CdnzDeError::MissingOrIncorrectMimetype,
 			) => return Error::ERR_FILE_CORRUPT.to_variant(),
 		};
-		Json::parse_string(&json_string)
+		Json::parse_string(&json)
 	}
 
 	/// Checks the integrity of a CDNZ Dictionary structure (e.g. when I did an oopsie), returning a
