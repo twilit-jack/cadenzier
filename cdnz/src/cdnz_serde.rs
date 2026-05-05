@@ -144,33 +144,41 @@ impl Cdnz {
 		let mut archive = Archive::new(reader);
 
 		// Define targets
-		let mut data_json = String::new();
-		let mut data_json_zst = String::new();
 		let mut version_json = String::new();
 		let mut mimetype = String::new();
+		let mut data_json = String::new();
+		let mut data_json_zst: Vec<u8> = Vec::new();
 
 		for entry in archive.entries()? {
 			let mut entry = entry?;
+			let path = entry.path()?;
+			let path_str = path.to_str().unwrap_or("");
 
-			let target = match entry.path()?.to_str() {
-				Some("mimetype") => &mut mimetype,
-				Some("version.json") => &mut version_json,
-				Some("data.json") => &mut data_json,
-				Some("data.json.zst") => &mut data_json_zst,
-				// This is for allowing extra files, e.g. vendor extensions or future additions.
+			match path_str {
+				"mimetype" => {
+					entry.read_to_string(&mut mimetype)?;
+				}
+				"version.json" => {
+					entry.read_to_string(&mut version_json)?;
+				}
+				"data.json" => {
+					entry.read_to_string(&mut data_json)?;
+				}
+				"data.json.zst" => {
+					entry.read_to_end(&mut data_json_zst)?;
+				} // Read as binary
 				_ => continue,
-			};
-			entry.read_to_string(target)?;
+			}
 		}
 
 		// Match file type
 		if mimetype.trim() == "application/vnd.cadenza.cdnz" {
-			if data_json_zst == "" {
+			if data_json_zst.is_empty() {
 				return Err(CdnzDeError::MissingOrEmptyDataJsonZst);
 			}
-			// Decompress and carry on
-			let decompressed = zstd::decode_all(data_json_zst.as_bytes())?;
-			data_json = String::from_utf8_lossy(&decompressed).to_string();
+			let decompressed = zstd::decode_all(&data_json_zst[..])?;
+			data_json = String::from_utf8(decompressed)
+				.map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "JSON not UTF-8"))?;
 		} else if mimetype.trim() == "application/vnd.cadenza.cdnx" {
 			if data_json == "" {
 				return Err(CdnzDeError::MissingOrEmptyDataJson);
