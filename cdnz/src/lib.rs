@@ -8,8 +8,8 @@ pub mod lilypond;
 pub mod upgrade;
 
 pub use cdnz_serde::VersionInfo;
-use cdnz_serde::*;
-use serde_with::skip_serializing_none;
+
+use serde_with::{DisplayFromStr, serde_as, skip_serializing_none};
 
 use std::collections::{BTreeMap, HashMap};
 
@@ -102,12 +102,10 @@ pub struct PersonInfo {
 
 // =========================== GLOBAL DATA ===========================
 
+#[serde_as]
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct GlobalData {
-	#[serde(
-		serialize_with = "serialize_position_map",
-		deserialize_with = "deserialize_position_map"
-	)]
+	#[serde_as(as = "BTreeMap<DisplayFromStr, _>")]
 	pub modifier_events: BTreeMap<Position, Vec<GlobalModEvent>>,
 }
 
@@ -170,9 +168,13 @@ pub struct Bpm {
 
 // =========================== PART ===========================
 
+#[serde_as]
 #[derive(Debug, Serialize, Deserialize, Default)]
 pub struct Part {
+	#[serde_as(as = "BTreeMap<DisplayFromStr, _>")]
 	pub rhythmic_events: BTreeMap<Position, RhythmicEvent>,
+
+	#[serde_as(as = "BTreeMap<DisplayFromStr, _>")]
 	pub modifier_events: BTreeMap<Position, Vec<LocalModEvent>>,
 }
 
@@ -279,6 +281,39 @@ pub struct Position {
 	pub pos: Rational32,
 
 	pub grace_index: u32,
+}
+
+impl std::fmt::Display for Position {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(f, "{}:{}:{}", self.measure, self.pos, self.grace_index)
+	}
+}
+
+impl std::str::FromStr for Position {
+	type Err = String;
+	fn from_str(s: &str) -> Result<Self, Self::Err> {
+		let parts: Vec<&str> = s.split(':').collect();
+
+		if parts.len() != 3 {
+			return Err("Format must be measure:pos:grace".to_string());
+		}
+
+		let measure = parts[0]
+			.parse::<u32>()
+			.map_err(|_| "Invalid measure index")?;
+
+		let pos = parts[1]
+			.parse::<Rational32>()
+			.map_err(|_| "Invalid rational position")?;
+
+		let grace_index = parts[2].parse::<u32>().map_err(|_| "Invalid grace index")?;
+
+		Ok(Position {
+			measure,
+			pos,
+			grace_index,
+		})
+	}
 }
 
 #[derive(Debug, Serialize, Deserialize)]

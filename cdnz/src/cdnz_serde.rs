@@ -5,12 +5,8 @@ use crate::upgrade::CdnzUpgradeError;
 
 use super::*;
 
-use std::{
-	collections::BTreeMap,
-	io::{self, Read},
-};
+use std::io::{self, Read};
 
-use serde::{Deserializer, Serializer};
 use tar::{Archive, Builder, Header};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -238,24 +234,4 @@ impl Cdnz {
 
 		Ok(())
 	}
-}
-
-pub(super) fn serialize_position_map<S>(
-	map: &BTreeMap<Position, Vec<GlobalModEvent>>,
-	serializer: S,
-) -> Result<S::Ok, S::Error>
-where
-	S: Serializer,
-{
-	map.iter().collect::<Vec<_>>().serialize(serializer)
-}
-
-pub(super) fn deserialize_position_map<'de, D>(
-	deserializer: D,
-) -> Result<BTreeMap<Position, Vec<GlobalModEvent>>, D::Error>
-where
-	D: Deserializer<'de>,
-{
-	Vec::<(Position, Vec<GlobalModEvent>)>::deserialize(deserializer)
-		.map(|v| v.into_iter().collect())
 }
