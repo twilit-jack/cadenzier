@@ -465,7 +465,7 @@ mod tests {
 		let original = create_test_cdnz();
 
 		let serialized = original.serialize().expect("Serialization failed");
-		let deserialized = Cdnz::deserialize(&serialized).expect("Deserialization failed");
+		let deserialized = Cdnz::deserialize(&serialized[..]).expect("Deserialization failed");
 
 		assert_eq!(format!("{:?}", original), format!("{:?}", deserialized));
 	}
