@@ -147,7 +147,7 @@ impl Cdnz {
 		let mut version_json = String::new();
 		let mut mimetype = String::new();
 		let mut data_json = String::new();
-		let mut data_json_zst: Vec<u8> = Vec::new();
+		let mut data_json_zst = Vec::<u8>::new();
 
 		for entry in archive.entries()? {
 			let mut entry = entry?;
