@@ -6,239 +6,93 @@ use crate::upgrade::CdnzUpgradeError;
 
 use std::io::{self, Read};
 
-use tar::{Archive, Builder, Header};
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct VersionInfo<'a> {
-	pub cdnz_version: &'a str,
-	pub cadenza_version: &'a str,
-}
-
-const CURRENT_VERSION: VersionInfo = VersionInfo {
-	cdnz_version: "0.1.0",
-	cadenza_version: env!("CARGO_PKG_VERSION"),
-};
-
-#[derive(Debug, thiserror::Error)]
-pub enum CdnzSerError {
-	#[error("IO error: {0}")]
-	IoError(#[from] io::Error),
-
-	#[error("Serde error: {0}")]
-	SerdeError(#[from] serde_json::Error),
-}
+const CURRENT_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[derive(Debug, thiserror::Error)]
 pub enum CdnzDeError {
 	#[error("IO error: {0}")]
 	IoError(#[from] io::Error),
-
-	#[error("Serde error: {0}")]
-	SerdeError(#[from] serde_json::Error),
-
 	#[error("Error upgrading file: {0}")]
 	UpgradeError(#[from] CdnzUpgradeError),
-
-	#[error("Missing or empty `data.json.zst` for CDNZ file")]
-	MissingOrEmptyDataJsonZst,
-
-	#[error("Missing or empty `data.json` for CDNX file")]
-	MissingOrEmptyDataJson,
-
-	#[error("Missing or incorrect `mimetype`")]
-	MissingOrIncorrectMimetype,
 }
 
-impl Cdnz {
-	/// Serializes `Cdnz` struct to main tarball format, returning tarball bytes.
-	pub fn serialize(&self) -> Result<Vec<u8>, CdnzSerError> {
-		let mut buffer = Vec::new();
-		{
-			let mut tar = Builder::new(&mut buffer);
+#[derive(Serialize, Deserialize)]
+struct CborContainer {
+	version: String,
+	#[serde(with = "serde_bytes")]
+	payload: Vec<u8>,
+}
 
-			// Write `data.json.zst`
-			let data_json = serde_json::to_string_pretty(self)?;
-			let data_json_zstd = zstd::encode_all(data_json.as_bytes(), 0)?;
-			let mut header = Header::new_gnu();
-			header.set_path("data.json.zst")?;
-			header.set_size(data_json_zstd.len() as u64);
-			header.set_cksum();
-			tar.append_data(&mut header, "data.json.zst", &data_json_zstd[..])?;
+impl Project {
+	// ======== SERIALIZE ========
 
-			// Write `version.json`
-			let version_json = serde_json::to_string_pretty(&CURRENT_VERSION)?;
-			let mut header = Header::new_gnu();
-			header.set_path("version.json")?;
-			header.set_size(version_json.len() as u64);
-			header.set_cksum();
-			tar.append_data(&mut header, "version.json", version_json.as_bytes())?;
-
-			// Write `mimetype`
-			let mimetype = "application/vnd.cadenza.cdnz";
-			let mut header = Header::new_gnu();
-			header.set_path("mimetype")?;
-			header.set_size(mimetype.len() as u64);
-			header.set_cksum();
-			tar.append_data(&mut header, "mimetype", mimetype.as_bytes())?;
-
-			tar.finish()?;
-		}
-		Ok(buffer)
+	/// Serialize to standard compressed format (CDNZ).
+	pub fn to_cdnz(&self) -> Result<Vec<u8>, io::Error> {
+		self.serialize(true)
 	}
 
-	/// Serializes `Cdnz` struct to `.cdnx` tarball format, returning tarball bytes.
-	///
-	/// `.cdnx` features an uncompressed `data.json` file.
-	pub fn serialize_no_compress(&self) -> Result<Vec<u8>, CdnzSerError> {
-		let mut buffer = Vec::new();
-		{
-			let mut tar = Builder::new(&mut buffer);
-
-			// Write `data.json`
-			let data_json = serde_json::to_string_pretty(self)?;
-			let mut header = Header::new_gnu();
-			header.set_path("data.json")?;
-			header.set_size(data_json.len() as u64);
-			header.set_cksum();
-			tar.append_data(&mut header, "data.json", data_json.as_bytes())?;
-
-			// Write `version.json`
-			let version_json = serde_json::to_string_pretty(&CURRENT_VERSION)?;
-			let mut header = Header::new_gnu();
-			header.set_path("version.json")?;
-			header.set_size(version_json.len() as u64);
-			header.set_cksum();
-			tar.append_data(&mut header, "version.json", version_json.as_bytes())?;
-
-			// Write `mimetype`
-			let mimetype = "application/vnd.cadenza.cdnz";
-			let mut header = Header::new_gnu();
-			header.set_path("mimetype")?;
-			header.set_size(mimetype.len() as u64);
-			header.set_cksum();
-			tar.append_data(&mut header, "mimetype", mimetype.as_bytes())?;
-
-			tar.finish()?;
-		}
-		Ok(buffer)
+	/// Serialize to uncompressed variant (CDNX).
+	pub fn to_cdnx(&self) -> Result<Vec<u8>, io::Error> {
+		self.serialize(false)
 	}
 
-	/// Serializes `Cdnz` struct to only JSON.
-	///
-	/// Mainly used as a small helper/wrapper for `cadenza_core`.
-	pub fn serialize_json(&self) -> Result<String, CdnzSerError> {
-		Ok(serde_json::to_string_pretty(self)?)
-	}
+	fn serialize(&self, compress: bool) -> Result<Vec<u8>, io::Error> {
+		let magic = if compress { b"CDNZ" } else { b"CDNX" };
 
-	/// Deserializes from zstd-compressed CDNZ tarball.
-	pub fn deserialize<R: Read>(reader: R) -> Result<Self, CdnzDeError> {
-		let data_json = Cdnz::deserialize_json(reader)?;
-		Ok(serde_json::from_str(&data_json)?)
-	}
+		let mut inner_bytes = Vec::new();
+		ciborium::ser::into_writer(self, &mut inner_bytes)
+			.map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
 
-	/// Extracts the JSON data file from a CDNZ or CDNX file.
-	///
-	/// INFO: Also performs needed upgrades to the format.
-	pub fn deserialize_json<R: Read>(reader: R) -> Result<String, CdnzDeError> {
-		let mut archive = Archive::new(reader);
-
-		// Define targets
-		let mut version_json = String::new();
-		let mut mimetype = String::new();
-		let mut data_json = String::new();
-		let mut data_json_zst = Vec::<u8>::new();
-
-		for entry in archive.entries()? {
-			let mut entry = entry?;
-			let path = entry.path()?;
-			let path_str = path.to_str().unwrap_or("");
-
-			match path_str {
-				"mimetype" => {
-					entry.read_to_string(&mut mimetype)?;
-				}
-				"version.json" => {
-					entry.read_to_string(&mut version_json)?;
-				}
-				"data.json" => {
-					entry.read_to_string(&mut data_json)?;
-				}
-				"data.json.zst" => {
-					entry.read_to_end(&mut data_json_zst)?;
-				} // Read as binary
-				_ => continue,
-			}
-		}
-
-		// Match file type
-		if mimetype.trim() == "application/vnd.cadenza.cdnz" {
-			if data_json_zst.is_empty() {
-				return Err(CdnzDeError::MissingOrEmptyDataJsonZst);
-			}
-			let decompressed = zstd::decode_all(&data_json_zst[..])?;
-			data_json = String::from_utf8(decompressed)
-				.map_err(|_| io::Error::new(io::ErrorKind::InvalidData, "JSON not UTF-8"))?;
-		} else if mimetype.trim() == "application/vnd.cadenza.cdnx" {
-			if data_json == "" {
-				return Err(CdnzDeError::MissingOrEmptyDataJson);
-			}
+		let payload = if compress {
+			zstd::encode_all(&inner_bytes[..], 3)?
 		} else {
-			return Err(CdnzDeError::MissingOrIncorrectMimetype);
-		}
+			inner_bytes
+		};
 
-		// Upgrade if needed
-		let version_info: VersionInfo = serde_json::from_str(&version_json)?;
-		upgrade::upgrade_json(&data_json, version_info, CURRENT_VERSION)?;
+		let container = CborContainer {
+			version: CURRENT_VERSION.to_string(),
+			payload,
+		};
 
-		Ok(data_json)
+		let mut output = Vec::from(*magic);
+		ciborium::ser::into_writer(&container, &mut output)
+			.map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+
+		Ok(output)
 	}
 
-	/// Validates a CDNZ tarball.
-	///
-	/// INFO: Considers upgradable tarballs as valid.
-	pub fn validate<R: Read>(reader: R) -> Result<(), CdnzDeError> {
-		let mut archive = Archive::new(reader);
+	// ======== DESERIALIZE ========
 
-		// Define targets
-		let mut data_json = String::new();
-		let mut data_json_zst = String::new();
-		let mut version_json = String::new();
-		let mut mimetype = String::new();
+	/// Decodes a byte array serialized of CDNZ or CDNX data into a `Project`.
+	pub fn from_bytes(data: &[u8]) -> Result<Self, CdnzDeError> {
+		let reader = std::io::Cursor::new(data);
+		Self::from_reader(reader)
+	}
 
-		for entry in archive.entries()? {
-			let mut entry = entry?;
+	/// Decodes a serialized CDNZ or CDNX data stream into a `Project`.
+	pub fn from_reader<R: Read>(mut reader: R) -> Result<Self, CdnzDeError> {
+		let mut magic = [0u8; 4];
+		reader.read_exact(&mut magic)?;
 
-			let target = match entry.path()?.to_str() {
-				Some("mimetype") => &mut mimetype,
-				Some("version.json") => &mut version_json,
-				Some("data.json") => &mut data_json,
-				Some("data.json.zst") => &mut data_json_zst,
-				// This is for allowing extra files, e.g. vendor extensions or future additions.
-				_ => continue,
-			};
-			entry.read_to_string(target)?;
-		}
+		let is_compressed = match &magic {
+			b"CDNZ" => true,
+			b"CDNX" => false,
+			_ => return Err(io::Error::new(io::ErrorKind::InvalidData, "Invalid Magic").into()),
+		};
 
-		// Match file type
-		if mimetype.trim() == "application/vnd.cadenza.cdnz" {
-			if data_json_zst == "" {
-				return Err(CdnzDeError::MissingOrEmptyDataJsonZst);
-			}
-			// Decompress and carry on
-			let decompressed = zstd::decode_all(data_json_zst.as_bytes())?;
-			data_json = String::from_utf8_lossy(&decompressed).to_string();
-		} else if mimetype.trim() == "application/vnd.cadenza.cdnx" {
-			if data_json == "" {
-				return Err(CdnzDeError::MissingOrEmptyDataJson);
-			}
+		let container: CborContainer = ciborium::de::from_reader(reader)
+			.map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
+
+		let inner_cbor_bytes = if is_compressed {
+			zstd::decode_all(&container.payload[..])?
 		} else {
-			return Err(CdnzDeError::MissingOrIncorrectMimetype);
-		}
+			container.payload
+		};
 
-		// Upgrade if needed
-		let version_info: VersionInfo = serde_json::from_str(&version_json)?;
-		upgrade::upgrade_json(&data_json, version_info, CURRENT_VERSION)?;
+		// TODO: Pass version to upgrade logic before final decode if structure changed
+		let project: Project = ciborium::de::from_reader(&inner_cbor_bytes[..])
+			.map_err(|e| io::Error::new(io::ErrorKind::Other, e.to_string()))?;
 
-		Ok(())
+		Ok(project)
 	}
 }

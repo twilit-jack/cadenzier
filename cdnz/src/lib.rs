@@ -7,35 +7,24 @@ pub mod cdnz_serde;
 pub mod lilypond;
 pub mod upgrade;
 
-pub use cdnz_serde::VersionInfo;
-
-use serde_with::{DisplayFromStr, serde_as, skip_serializing_none};
-
-use std::collections::{BTreeMap, HashMap};
-
-use num::Rational32;
-
+use num::Rational32 as Rat32;
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
+use std::collections::BTreeMap;
 
 // =========================== ROOT ===========================
 
 /// The root object of a CDNZ file.
-#[derive(Debug, Serialize, Deserialize, Default)]
-pub struct Cdnz {
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+pub struct Project {
 	pub cdnz: Metadata,
 	pub global: GlobalData,
-	pub parts: HashMap<String, Part>,
-	pub books: Vec<Book>,
-}
-
-impl ToString for Cdnz {
-	fn to_string(&self) -> String {
-		format!("{:#?}", self)
-	}
+	pub parts: BTreeMap<PartName, Part>,
+	pub layouts: BTreeMap<LayoutName, Layout>,
 }
 
 /// Metadata about the CDNZ file in question.
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct Metadata {
 	/// The name/title for the music.
 	///
@@ -79,7 +68,7 @@ pub struct Metadata {
 	pub engraving_license: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 #[skip_serializing_none]
 pub struct PersonInfo {
 	/// The name of this person or entity.
@@ -102,14 +91,12 @@ pub struct PersonInfo {
 
 // =========================== GLOBAL DATA ===========================
 
-#[serde_as]
-#[derive(Debug, Serialize, Deserialize, Default)]
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct GlobalData {
-	#[serde_as(as = "BTreeMap<DisplayFromStr, _>")]
-	pub modifier_events: BTreeMap<Position, Vec<GlobalModEvent>>,
+	pub mod_events: BTreeMap<Position, Vec<GlobalModEvent>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum GlobalModEvent {
 	KeyChange {
 		/// The note this key change references.
@@ -145,7 +132,7 @@ pub enum GlobalModEvent {
 	},
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum KeyMode {
 	Major,
 	Minor,
@@ -161,31 +148,71 @@ pub enum KeyMode {
 	Locrian,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Bpm {
-	pub unit: Rational32,
+	pub unit: Rat32,
 }
 
 // =========================== PART ===========================
 
-#[serde_as]
-#[derive(Debug, Serialize, Deserialize, Default)]
+pub type PartName = String;
+
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct Part {
-	#[serde_as(as = "BTreeMap<DisplayFromStr, _>")]
+	pub voices: Vec<Voice>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+pub struct Voice {
+	pub instrument: Instrument,
 	pub rhythmic_events: BTreeMap<Position, RhythmicEvent>,
-
-	#[serde_as(as = "BTreeMap<DisplayFromStr, _>")]
-	pub modifier_events: BTreeMap<Position, Vec<LocalModEvent>>,
+	pub mod_events: BTreeMap<Position, Vec<LocalModEvent>>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum RhythmicEvent {
-	Note { pitch: Pitch, duration: Duration },
-	Rest { duration: Duration },
+	Note { pitches: Vec<Pitch> },
+	DrumNote {},
+	Rest {},
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub enum LocalModEvent {
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub enum LocalModEvent {}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub enum ClefSign {
+	G,
+	F,
+	C,
+}
+
+// =========================== LAYOUT ===========================
+
+pub type LayoutName = String;
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct Layout {
+	pub header: Header,
+	pub layout: LayoutElement,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct Header {}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub enum LayoutElement {
+	Staff { voices: Vec<LayoutVoice> },
+	StaffGroup { children: Vec<LayoutElement> },
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub struct LayoutVoice {
+	pub mod_events: Vec<LayoutModEvent>,
+	pub referenced_voice: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+pub enum LayoutModEvent {
 	ClefChange {
 		sign: ClefSign,
 
@@ -203,69 +230,36 @@ pub enum LocalModEvent {
 		/// Usually 0, but changes for things like a "treble_8" clef (where it would be `-8`).
 		octave: i32,
 	},
+	Transposition {
+		pitch: Pitch,
+	},
 }
 
-impl LocalModEvent {
+impl LayoutModEvent {
 	/// A helper function for creating a basic treble clef.
-	pub fn new_treble_clef() -> LocalModEvent {
-		LocalModEvent::ClefChange {
+	pub fn new_treble_clef() -> LayoutModEvent {
+		LayoutModEvent::ClefChange {
 			sign: ClefSign::G,
 			pos: -2,
 			octave: 0,
 		}
 	}
 	/// A helper function for creating a basic bass clef.
-	pub fn new_bass_clef() -> LocalModEvent {
-		LocalModEvent::ClefChange {
+	pub fn new_bass_clef() -> LayoutModEvent {
+		LayoutModEvent::ClefChange {
 			sign: ClefSign::F,
 			pos: 2,
 			octave: 0,
 		}
 	}
 	/// A helper function for creating a basic alto clef.
-	pub fn new_alto_clef() -> LocalModEvent {
-		LocalModEvent::ClefChange {
+	pub fn new_alto_clef() -> LayoutModEvent {
+		LayoutModEvent::ClefChange {
 			sign: ClefSign::C,
 			pos: 0,
 			octave: 0,
 		}
 	}
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum ClefSign {
-	G,
-	F,
-	C,
-}
-
-// =========================== BOOK ===========================
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Book {
-	pub label: String,
-	pub header: Header,
-	pub layout: Layout,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Header {}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub enum Layout {
-	Staff(Staff),
-	StaffGroup(StaffGroup),
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Staff {
-	/// Contains string keys linking to the parts in the root CDNZ struct.
-	pub parts: Vec<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct StaffGroup {
-	pub children: Vec<Layout>,
 }
 
 // =========================== PRIMITIVES ===========================
@@ -278,45 +272,12 @@ pub struct Position {
 	/// The position in the measure as a rational.
 	///
 	/// (0, 1) would be the start of the measure, (1, 2) – halfway through.
-	pub pos: Rational32,
+	pub pos: Rat32,
 
 	pub grace_index: u32,
 }
 
-impl std::fmt::Display for Position {
-	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-		write!(f, "{}:{}:{}", self.measure, self.pos, self.grace_index)
-	}
-}
-
-impl std::str::FromStr for Position {
-	type Err = String;
-	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		let parts: Vec<&str> = s.split(':').collect();
-
-		if parts.len() != 3 {
-			return Err("Format must be measure:pos:grace".to_string());
-		}
-
-		let measure = parts[0]
-			.parse::<u32>()
-			.map_err(|_| "Invalid measure index")?;
-
-		let pos = parts[1]
-			.parse::<Rational32>()
-			.map_err(|_| "Invalid rational position")?;
-
-		let grace_index = parts[2].parse::<u32>().map_err(|_| "Invalid grace index")?;
-
-		Ok(Position {
-			measure,
-			pos,
-			grace_index,
-		})
-	}
-}
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Pitch {
 	/// A whole step, beginning at middle C.
 	///
@@ -331,27 +292,83 @@ pub struct Pitch {
 	///
 	/// Examples:
 	/// - Natural: (0, 1)
-	/// - Sharp: Some((1, ))
-	pub alteration: Rational32,
+	/// - Sharp: (1, 2)
+	/// - Flat: (-1, 2)
+	/// - Double sharp: (1, 1)
+	pub alteration: Rat32,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-pub struct Duration {
-	/// The `log₂(x)` of the base duration of the note.
-	///
-	/// Examples:
-	/// - Whole note: 0
-	/// - Half note: 1
-	/// - Quarter note: 2
-	/// - Eighth note: 3
-	/// - Breve: -1
-	pub base: i16,
+#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+pub enum Instrument {
+	// Basic assortment of instruments. Will be expanded as time goes.
+	// You'll be able to suggest your own additions once issues get enabled.
 
-	/// The number of dots on this note.
-	///
-	/// Examples:
-	/// - Not dotted: 0
-	/// - Dotted: 1
-	/// - Double-dotted: 2,
-	pub dots: u16,
+	// ==== Strings ====
+	Violin,
+	Viola,
+	Cello,
+	DoubleBass,
+
+	Harp,
+
+	Guitar,
+	ElectricGuitar,
+	BassGuitar,
+	ElectricBassGuitar,
+
+	Banjo,
+	Mandolin,
+	Lute,
+
+	// ==== Woodwinds ====
+	Flute,
+	Piccolo,
+
+	Oboe,
+	EnglishHorn,
+	Clarinet,
+	BassClarinet,
+
+	Bassoon,
+	Contrabassoon,
+
+	SopranoSaxophone,
+	AltoSaxophone,
+	TenorSaxophone,
+	BaritoneSaxophone,
+
+	// ==== Brass ====
+	Trumpet,
+	Cornet,
+
+	FrenchHorn,
+
+	Trombone,
+	BassTrombone,
+
+	Euphonium,
+	Tuba,
+
+	// ==== Percussion ====
+	SnareDrum,
+	BassDrum,
+	Cymbals,
+	Triangle,
+	Tambourine,
+
+	Timpani,
+
+	Xylophone,
+	Marimba,
+	Glockenspiel,
+	Vibraphone,
+
+	// ==== Keyboards ====
+	#[default]
+	Piano,
+	Harpsichord,
+	Organ,
+	Celesta,
+	Accordion,
+	Synthesizer,
 }

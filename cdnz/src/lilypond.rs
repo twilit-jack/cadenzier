@@ -3,7 +3,7 @@
 
 use super::*;
 
-impl Cdnz {
+impl Project {
 	pub fn to_lilypond(&self) -> Vec<u8> {
 		todo!()
 	}
