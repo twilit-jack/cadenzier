@@ -2,8 +2,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use iced::{
-	Element, Length,
-	widget::{button, column, container, row, text},
+	Element, Length, Renderer, Theme,
+	widget::{Column, button, column, container, row, text},
 };
 
 #[derive(Debug, Default)]
@@ -35,10 +35,11 @@ enum SidePanelTab {
 	Parts,
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone)]
 enum Message {
 	ModeSwitch(EditorMode),
 	SidePanelTabSwitch(SidePanelTab),
+	LayoutSelect(cdnz::LayoutName),
 }
 
 pub(super) fn run() -> iced::Result {
@@ -49,6 +50,7 @@ fn update(state: &mut State, message: Message) {
 	match message {
 		Message::ModeSwitch(mode) => state.editor_mode = mode,
 		Message::SidePanelTabSwitch(tab) => state.write_mode_state.side_panel_tab = tab,
+		Message::LayoutSelect(name) => state.selected_layout = name,
 	}
 }
 
@@ -89,8 +91,15 @@ fn view_side_panel(state: &State) -> Element<'_, Message> {
 
 	let content_list = match state.write_mode_state.side_panel_tab {
 		SidePanelTab::Layouts => {
-			// TODO: Make this use the actual layouts for the current project
-			column![button("Full Score"), button("Flute"), button("Trumpet")]
+			let mut buttons: Vec<Element<'_, Message, Theme, Renderer>> = Vec::new();
+			for (name, _layout) in &state.project.layouts {
+				buttons.push(
+					button(name.as_str())
+						.on_press(Message::LayoutSelect(name.clone()))
+						.into(),
+				);
+			}
+			Column::from_vec(buttons)
 		}
 		SidePanelTab::Parts => {
 			// TODO: Make this use the actual parts for the current project
