@@ -1,9 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit-jack@gmail.com>
-// SPDX-License-Identifier: MIT OR Apache-2.0
-
-use crate::upgrade::CdnzUpgradeError;
+// SPDX-License-Identifier: LGPL-3.0-or-later
 
 use super::*;
+use crate::upgrade::CdnzUpgradeError;
 
 use std::io::{self, Read};
 

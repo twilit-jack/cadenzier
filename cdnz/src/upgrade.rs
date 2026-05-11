@@ -1,5 +1,5 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit-jack@gmail.com>
-// SPDX-License-Identifier: MIT OR Apache-2.0
+// SPDX-License-Identifier: LGPL-3.0-or-later
 
 //! This module focuses on upgrading old CDNZ files to the latest version.
 
