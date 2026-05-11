@@ -1,29 +1,25 @@
 <!-- SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me> -->
-<!-- SPDX-License-Identifier: MIT OR Apache-2.0 -->
+<!-- SPDX-License-Identifier: LGPL-3.0-or-later -->
 
 # CDNZ
 
-CDNZ is an open data format for storing music, primarily intended for use by [Cadenza][Cadenza], but
-can also be used elsewhere. This crate is both a Rust implementation, and a specification.
+CDNZ is a work-in-progress open data format for storing music, primarily intended for use by
+[Cadenza][Cadenza], but you're free to use it for your own needs. This crate is the main
+implementation of CDNZ, and the specification is actively changing along with it. Once development
+largely settles, and the main ideas and opinions of the format are set, a formal specification will
+be published.
 
-The format is partly inspired by [MNX][MNX] and [LilyPond][LilyPond], and can be converted to
-LilyPond code using this lib. Cadenza can also convert it to LilyPond and then PDF, SVG, and MIDI.
+## Format Description Draft
 
-## Specification
+The format is partly inspired by [MNX][MNX] and [LilyPond][LilyPond], and it will be possible to
+convert it to LilyPond in the future, via this crate.
 
-This crate also partly functions as the specification of the CDNZ format.
+I've spent a good while thinking about the fundamental problem of how we store music, and what
+implications it brings. As of now, CDNZ is aiming to be an opiniated music notation format, carrying
+a split between what the music *is*, and how the music is *shown*.
 
-In the future, a solid specification will be provided. In the meantime, the Rust documentation will
-have to suffice.
-
-## License
-
-The CDNZ spec and docs, and this Rust implementation, are both licensed under either of:
-
-- Apache License, Version 2.0 (<https://www.apache.org/licenses/LICENSE-2.0>)
-- MIT license (<https://opensource.org/licenses/MIT>)
-
-at your option.
+It uses a structured, hierarchical model, while still allowing for complex additions that challenge
+modern attempts, following in the footsteps of what LilyPond set out to create.
 
 
 [Cadenza]: https://codeberg.org/twilit-jack/cadenza
