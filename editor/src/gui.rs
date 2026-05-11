@@ -24,21 +24,11 @@ enum EditorMode {
 }
 
 #[derive(Debug, Default)]
-struct WriteModeState {
-	pub side_panel_tab: SidePanelTab,
-}
-
-#[derive(Debug, Clone, Copy, Default)]
-enum SidePanelTab {
-	#[default]
-	Layouts,
-	Parts,
-}
+struct WriteModeState {}
 
 #[derive(Debug, Clone)]
 enum Message {
 	ModeSwitch(EditorMode),
-	SidePanelTabSwitch(SidePanelTab),
 	LayoutSelect(cdnz::LayoutName),
 }
 
@@ -49,7 +39,6 @@ pub(super) fn run() -> iced::Result {
 fn update(state: &mut State, message: Message) {
 	match message {
 		Message::ModeSwitch(mode) => state.editor_mode = mode,
-		Message::SidePanelTabSwitch(tab) => state.write_mode_state.side_panel_tab = tab,
 		Message::LayoutSelect(name) => state.selected_layout = name,
 	}
 }
@@ -75,39 +64,21 @@ fn view(state: &State) -> Element<'_, Message> {
 // TODO: Make function `view_setup_mode`
 
 fn view_write_mode(state: &State) -> Element<'_, Message> {
+	let mut buttons: Vec<Element<'_, Message, Theme, Renderer>> = Vec::new();
+	for (name, _layout) in &state.project.layouts {
+		buttons.push(
+			button(name.as_str())
+				.on_press(Message::LayoutSelect(name.clone()))
+				.into(),
+		);
+	}
+	let side_panel = Column::from_vec(buttons);
+
 	column![
-		row![view_viewport(state), view_side_panel(state)],
+		row![view_viewport(state), side_panel],
 		view_status_bar(state)
 	]
 	.into()
-}
-
-fn view_side_panel(state: &State) -> Element<'_, Message> {
-	let tab_switch_buttons = row![
-		// TODO: Make these have a selected appearence
-		button("Layouts").on_press(Message::SidePanelTabSwitch(SidePanelTab::Layouts)),
-		button("Parts").on_press(Message::SidePanelTabSwitch(SidePanelTab::Parts)),
-	];
-
-	let content_list = match state.write_mode_state.side_panel_tab {
-		SidePanelTab::Layouts => {
-			let mut buttons: Vec<Element<'_, Message, Theme, Renderer>> = Vec::new();
-			for (name, _layout) in &state.project.layouts {
-				buttons.push(
-					button(name.as_str())
-						.on_press(Message::LayoutSelect(name.clone()))
-						.into(),
-				);
-			}
-			Column::from_vec(buttons)
-		}
-		SidePanelTab::Parts => {
-			// TODO: Make this use the actual parts for the current project
-			column![button("Flute"), button("Trumpet")]
-		}
-	};
-
-	column![tab_switch_buttons, content_list].into()
 }
 
 fn view_status_bar(state: &State) -> Element<'_, Message> {
