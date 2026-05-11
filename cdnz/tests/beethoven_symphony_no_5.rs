@@ -2,159 +2,190 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 use cdnz::*;
+use num::Rational32 as Rat32;
+use std::{collections::BTreeMap, fs, path::PathBuf};
 
-use num::Rational32;
-use std::collections::{BTreeMap, HashMap};
-
-fn beethoven_create_cdnz() -> Cdnz {
-	Cdnz {
+fn create_beethoven_project() -> Project {
+	Project {
 		cdnz: Metadata {
-			score_title: "Symphony No. 5".to_string(),
+			score_title: "Symphony No. 5".into(),
 
 			composer: PersonInfo {
-				name: "Ludwig van Beethoven".to_string(),
+				name: "Ludwig van Beethoven".into(),
 				email: None,
 				is_person: true,
 			},
 			arranger: PersonInfo {
-				name: "Twilit Jack".to_string(),
-				email: Some("twilit.jack@proton.me".to_string()),
+				name: "Twilit Jack".into(),
+				email: Some("twilit.jack@proton.me".into()),
 				is_person: true,
 			},
 			engraver: PersonInfo {
-				name: "Twilit Jack".to_string(),
-				email: Some("twilit.jack@proton.me".to_string()),
+				name: "Twilit Jack".into(),
+				email: Some("twilit.jack@proton.me".into()),
 				is_person: true,
 			},
 
 			description: "Symphony No. 5 in C minor of Ludwig van Beethoven, Op. 67, written \
 				between 1804 and 1808.\n\n\
 				It is one of the best-known compositions in classical music."
-				.to_string(),
+				.into(),
 
-			music_license: "Public-Domain".to_string(),
-			engraving_license: "CC0-1.0".to_string(),
+			music_license: "Public-Domain".into(),
+			engraving_license: "CC0-1.0".into(),
 		},
 
 		global: GlobalData {
-			modifier_events: BTreeMap::from([(
+			mod_events: [(
 				Position {
 					measure: 0,
-					pos: Rational32::default(),
+					pos: Rat32::default(),
 					grace_index: 0,
 				},
-				Vec::from([
+				[
 					GlobalModEvent::KeyChange {
 						note: Pitch {
 							step: 0,
-							alteration: Rational32::default(),
+							alteration: Rat32::default(),
 						},
 						mode: KeyMode::Minor,
 					},
 					GlobalModEvent::TimeChange { count: 2, unit: 4 },
-				]),
-			)]),
+				]
+				.into(),
+			)]
+			.into(),
 		},
 
-		parts: HashMap::from([(
-			"piano".to_string(),
+		parts: [(
+			"Piano".into(),
 			Part {
-				rhythmic_events: BTreeMap::from([
-					(
-						Position {
-							measure: 0,
-							pos: Rational32::default(),
-							grace_index: 0,
-						},
-						RhythmicEvent::Rest {
-							duration: Duration { base: 3, dots: 0 },
-						},
-					),
-					(
-						Position {
-							measure: 0,
-							pos: Rational32::new(1, 4),
-							grace_index: 0,
-						},
-						RhythmicEvent::Note {
-							pitch: Pitch {
-								step: 4,
-								alteration: Rational32::default(),
+				voices: vec![Voice {
+					instrument: Instrument::Piano,
+					rhythmic_events: BTreeMap::from([
+						(
+							Position {
+								measure: 0,
+								pos: Rat32::default(),
+								grace_index: 0,
 							},
-							duration: Duration { base: 3, dots: 0 },
-						},
-					),
-					(
-						Position {
-							measure: 0,
-							pos: Rational32::new(2, 4),
-							grace_index: 0,
-						},
-						RhythmicEvent::Note {
-							pitch: Pitch {
-								step: 4,
-								alteration: Rational32::default(),
+							RhythmicEvent::Rest {},
+						),
+						(
+							Position {
+								measure: 0,
+								pos: Rat32::new(1, 4),
+								grace_index: 0,
 							},
-							duration: Duration { base: 3, dots: 0 },
-						},
-					),
-					(
-						Position {
-							measure: 0,
-							pos: Rational32::new(3, 4),
-							grace_index: 0,
-						},
-						RhythmicEvent::Note {
-							pitch: Pitch {
-								step: 4,
-								alteration: Rational32::default(),
+							RhythmicEvent::Note {
+								pitches: vec![Pitch {
+									step: 4,
+									alteration: Rat32::default(),
+								}],
 							},
-							duration: Duration { base: 3, dots: 0 },
-						},
-					),
-					(
-						Position {
-							measure: 1,
-							pos: Rational32::default(),
-							grace_index: 0,
-						},
-						RhythmicEvent::Note {
-							pitch: Pitch {
-								step: 2,
-								alteration: Rational32::new(-1, 2),
+						),
+						(
+							Position {
+								measure: 0,
+								pos: Rat32::new(2, 4),
+								grace_index: 0,
 							},
-							duration: Duration { base: 0, dots: 0 },
-						},
-					),
-				]),
-				modifier_events: BTreeMap::from([]),
+							RhythmicEvent::Note {
+								pitches: vec![Pitch {
+									step: 4,
+									alteration: Rat32::default(),
+								}],
+							},
+						),
+						(
+							Position {
+								measure: 0,
+								pos: Rat32::new(3, 4),
+								grace_index: 0,
+							},
+							RhythmicEvent::Note {
+								pitches: vec![Pitch {
+									step: 4,
+									alteration: Rat32::default(),
+								}],
+							},
+						),
+						(
+							Position {
+								measure: 1,
+								pos: Rat32::default(),
+								grace_index: 0,
+							},
+							RhythmicEvent::Note {
+								pitches: [Pitch {
+									step: 2,
+									alteration: Rat32::new(-1, 2),
+								}]
+								.into(),
+							},
+						),
+					]),
+					mod_events: [].into(),
+				}],
 			},
-		)]),
+		)]
+		.into(),
 
-		books: Vec::from([Book {
-			label: "Final Score".to_string(),
-			header: Header {},
-			layout: Layout::Staff(Staff {
-				parts: Vec::from(["piano".to_string()]),
-			}),
-		}]),
+		layouts: [(
+			"Final Score".into(),
+			Layout {
+				header: Header {},
+				layout: LayoutElement::Staff {
+					voices: [LayoutVoice {
+						referenced_voice: "Piano".into(),
+						mod_events: [].into(),
+					}]
+					.into(),
+				},
+			},
+		)]
+		.into(),
 	}
 }
 
 #[test]
-fn beethoven_round_trip() {
-	let original = beethoven_create_cdnz();
+fn round_trip() {
+	let original = create_beethoven_project();
 
-	let serialized = original.serialize().expect("Serialization failed");
-	let deserialized = Cdnz::deserialize(&serialized[..]).expect("Deserialization failed");
+	let serialized = original.to_cdnz().expect("Serialization failed");
+	let deserialized = Project::from_reader(&serialized[..]).expect("Deserialization failed");
 
-	assert_eq!(format!("{:?}", original), format!("{:?}", deserialized));
+	assert_eq!(original, deserialized);
 }
 
 #[test]
-fn beethoven_create_json_example_file() {
-	let original = beethoven_create_cdnz();
+fn create_beethoven_cdnz_file() {
+	let project = create_beethoven_project();
+	let cdnz = project.to_cdnz().expect("CDNZ serialization failed");
 
-	let json = serde_json::to_string_pretty(&original).expect("JSON serialization failed");
-	println!("{}", json);
+	// Construct path relative to crate root
+	let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+		.join("examples")
+		.join("beethoven_symphony_no_5.cdnz");
+
+	let parent = path.parent().unwrap();
+	fs::create_dir_all(parent).unwrap();
+
+	fs::write(path, cdnz).expect("Failed to write example file");
+}
+
+#[test]
+fn create_beethoven_cdnx_file() {
+	let project = create_beethoven_project();
+	let cdnz = project.to_cdnx().expect("CDNX serialization failed");
+
+	// Construct path relative to crate root
+	let path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
+		.join("examples")
+		.join("beethoven_symphony_no_5.cdnx");
+
+	let parent = path.parent().unwrap();
+	fs::create_dir_all(parent).unwrap();
+
+	fs::write(path, cdnz).expect("Failed to write example file");
 }
