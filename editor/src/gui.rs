@@ -6,6 +6,10 @@ use iced::{
 	widget::{Column, button, column, container, row, text},
 };
 
+pub(super) fn run() -> iced::Result {
+	iced::application(State::default, update, view).run()
+}
+
 #[derive(Debug, Default)]
 struct State {
 	editor_mode: EditorMode,
@@ -30,10 +34,6 @@ struct WriteModeState {}
 enum Message {
 	ModeSwitch(EditorMode),
 	LayoutSelect(cdnz::LayoutName),
-}
-
-pub(super) fn run() -> iced::Result {
-	iced::application(State::default, update, view).run()
 }
 
 fn update(state: &mut State, message: Message) {
