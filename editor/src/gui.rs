@@ -64,15 +64,15 @@ fn view(state: &State) -> Element<'_, Message> {
 // TODO: Make function `view_setup_mode`
 
 fn view_write_mode(state: &State) -> Element<'_, Message> {
-	let mut buttons: Vec<Element<'_, Message, Theme, Renderer>> = Vec::new();
-	for (name, _layout) in &state.project.layouts {
-		buttons.push(
+	let mut layout_buttons: Vec<Element<'_, Message, Theme, Renderer>> = Vec::new();
+	for (name, _) in &state.project.layouts {
+		layout_buttons.push(
 			button(name.as_str())
 				.on_press(Message::LayoutSelect(name.clone()))
 				.into(),
 		);
 	}
-	let side_panel = Column::from_vec(buttons);
+	let side_panel = Column::from_vec(layout_buttons);
 
 	column![
 		row![view_viewport(state), side_panel],
