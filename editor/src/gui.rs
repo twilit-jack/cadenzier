@@ -1,97 +1,128 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use iced::{
-	Element, Length, Renderer, Theme,
-	widget::{Column, button, column, container, row, text},
-};
+mod help;
+mod render;
+mod setup;
+mod write;
+
+use help::Help;
+use render::Render;
+use setup::Setup;
+use write::Write;
+
+use iced::{Element, Task};
 
 pub(super) fn run() -> iced::Result {
 	iced::application(State::default, update, view).run()
 }
 
-#[derive(Debug, Default)]
 struct State {
-	editor_mode: EditorMode,
-	write_mode_state: WriteModeState,
+	screen: Screen,
+	global: GlobalState,
+}
 
+struct GlobalState {
 	project: cdnz::Project,
-	selected_layout: cdnz::LayoutName,
 }
 
-#[derive(Debug, Clone, Copy, Default)]
-enum EditorMode {
-	#[default]
-	Setup,
-	Write,
-	Help,
+impl Default for State {
+	fn default() -> Self {
+		Self {
+			screen: Screen::Setup(Setup::default()),
+			global: GlobalState {
+				project: cdnz::Project::default(),
+			},
+		}
+	}
 }
 
-#[derive(Debug, Default)]
-struct WriteModeState {}
+enum Screen {
+	Render(Render),
+	Setup(Setup),
+	Write(Write),
+	Help(Help),
+}
 
 #[derive(Debug, Clone)]
 enum Message {
-	ModeSwitch(EditorMode),
-	LayoutSelect(cdnz::LayoutName),
+	Render(render::Message),
+	Setup(setup::Message),
+	Write(write::Message),
+	Help(help::Message),
 }
 
-fn update(state: &mut State, message: Message) {
+fn update(state: &mut State, message: Message) -> Task<Message> {
 	match message {
-		Message::ModeSwitch(mode) => state.editor_mode = mode,
-		Message::LayoutSelect(name) => state.selected_layout = name,
+		Message::Render(message) => {
+			let Screen::Render(render) = &mut state.screen else {
+				return Task::none();
+			};
+			let action = render.update(&mut state.global, message);
+			match action {
+				render::Action::None => Task::none(),
+			}
+		}
+		Message::Setup(message) => {
+			let Screen::Setup(setup) = &mut state.screen else {
+				return Task::none();
+			};
+			let action = setup.update(&mut state.global, message);
+			match action {
+				setup::Action::None => Task::none(),
+			}
+		}
+		Message::Write(message) => {
+			let Screen::Write(write) = &mut state.screen else {
+				return Task::none();
+			};
+			let action = write.update(&mut state.global, message);
+			match action {
+				write::Action::None => Task::none(),
+			}
+		}
+		Message::Help(message) => {
+			let Screen::Help(help) = &mut state.screen else {
+				return Task::none();
+			};
+			let action = help.update(&mut state.global, message);
+			match action {
+				help::Action::None => Task::none(),
+			}
+		}
 	}
 }
 
 fn view(state: &State) -> Element<'_, Message> {
-	let mode_switch_buttons = row![
-		// TODO: Make these have a selected appearence
-		button("Setup").on_press(Message::ModeSwitch(EditorMode::Setup)),
-		button("Write").on_press(Message::ModeSwitch(EditorMode::Write)),
-		button("Help").on_press(Message::ModeSwitch(EditorMode::Help)),
-	];
-
-	let content = container(match state.editor_mode {
-		EditorMode::Setup => text("Setup view placeholder").into(),
-		EditorMode::Write => view_write_mode(state),
-		EditorMode::Help => text("Documentation viewer placeholder").into(),
-	})
-	.padding(8);
-
-	column![mode_switch_buttons, content].into()
-}
-
-// TODO: Make function `view_setup_mode`
-
-fn view_write_mode(state: &State) -> Element<'_, Message> {
-	let mut layout_buttons: Vec<Element<'_, Message, Theme, Renderer>> = Vec::new();
-	for (name, _) in &state.project.layouts {
-		layout_buttons.push(
-			button(name.as_str())
-				.on_press(Message::LayoutSelect(name.clone()))
-				.into(),
-		);
+	match &state.screen {
+		Screen::Render(render) => render.view(&state.global).map(Message::Render),
+		Screen::Setup(setup) => setup.view(&state.global).map(Message::Setup),
+		Screen::Write(write) => write.view(&state.global).map(Message::Write),
+		Screen::Help(help) => help.view(&state.global).map(Message::Help),
 	}
-	let side_panel = Column::from_vec(layout_buttons);
-
-	column![
-		row![view_viewport(state), side_panel],
-		view_status_bar(state)
-	]
-	.into()
+	//let mode_button = |label: &'static str, screen: Screen| {
+	//	button(label)
+	//		.on_press(Message::ScreenSwitch(screen))
+	//		.style(move |theme: &Theme, _| {
+	//			let palette = theme.extended_palette();
+	//			let active = state.screen;
+	//			button::Style {
+	//				background: Some(
+	//					if active {
+	//						palette.primary.base.color
+	//					} else {
+	//						palette.background.base.color
+	//					}
+	//					.into(),
+	//				),
+	//				text_color: palette.background.base.text,
+	//				..button::Style::default()
+	//			}
+	//		})
+	//};
+	//let mode_switch_buttons = row![
+	//	mode_button("Setup", Screen::Setup),
+	//	mode_button("Write", Screen::Write),
+	//	mode_button("Help", Screen::Help),
+	//];
 }
-
-fn view_status_bar(state: &State) -> Element<'_, Message> {
-	// TODO: Make status bar
-	row![].into()
-}
-
-fn view_viewport(state: &State) -> Element<'_, Message> {
-	// TODO: Make viewport
-	container(text("Viewport placeholder"))
-		.width(Length::Fill)
-		.height(Length::Fill)
-		.into()
-}
-
-// TODO: Make function `view_doc_viewer`
