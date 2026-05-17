@@ -7,7 +7,7 @@ pub mod cdnz_serde;
 pub mod lilypond;
 pub mod upgrade;
 
-use num::Rational32 as Rat32;
+use num::Rational32 as Fraction;
 use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 use std::collections::BTreeMap;
@@ -150,7 +150,7 @@ pub enum KeyMode {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Bpm {
-	pub unit: Rat32,
+	pub unit: Fraction,
 }
 
 // =========================== PART ===========================
@@ -272,7 +272,7 @@ pub struct Position {
 	/// The position in the measure as a rational.
 	///
 	/// (0, 1) would be the start of the measure, (1, 2) – halfway through.
-	pub pos: Rat32,
+	pub pos: Fraction,
 
 	pub grace_index: u32,
 }
@@ -295,7 +295,7 @@ pub struct Pitch {
 	/// - Sharp: (1, 2)
 	/// - Flat: (-1, 2)
 	/// - Double sharp: (1, 1)
-	pub alteration: Rat32,
+	pub alteration: Fraction,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]

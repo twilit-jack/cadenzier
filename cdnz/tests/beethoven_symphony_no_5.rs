@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
 use cdnz::*;
-use num::Rational32 as Rat32;
+use num::Rational32 as Fraction;
 use std::{collections::BTreeMap, fs, path::PathBuf};
 
 fn create_beethoven_project() -> Project {
@@ -39,14 +39,14 @@ fn create_beethoven_project() -> Project {
 			mod_events: [(
 				Position {
 					measure: 0,
-					pos: Rat32::default(),
+					pos: Fraction::default(),
 					grace_index: 0,
 				},
 				[
 					GlobalModEvent::KeyChange {
 						note: Pitch {
 							step: 0,
-							alteration: Rat32::default(),
+							alteration: Fraction::default(),
 						},
 						mode: KeyMode::Minor,
 					},
@@ -66,7 +66,7 @@ fn create_beethoven_project() -> Project {
 						(
 							Position {
 								measure: 0,
-								pos: Rat32::default(),
+								pos: Fraction::default(),
 								grace_index: 0,
 							},
 							RhythmicEvent::Rest {},
@@ -74,52 +74,52 @@ fn create_beethoven_project() -> Project {
 						(
 							Position {
 								measure: 0,
-								pos: Rat32::new(1, 4),
+								pos: Fraction::new(1, 4),
 								grace_index: 0,
 							},
 							RhythmicEvent::Note {
 								pitches: vec![Pitch {
 									step: 4,
-									alteration: Rat32::default(),
+									alteration: Fraction::default(),
 								}],
 							},
 						),
 						(
 							Position {
 								measure: 0,
-								pos: Rat32::new(2, 4),
+								pos: Fraction::new(2, 4),
 								grace_index: 0,
 							},
 							RhythmicEvent::Note {
 								pitches: vec![Pitch {
 									step: 4,
-									alteration: Rat32::default(),
+									alteration: Fraction::default(),
 								}],
 							},
 						),
 						(
 							Position {
 								measure: 0,
-								pos: Rat32::new(3, 4),
+								pos: Fraction::new(3, 4),
 								grace_index: 0,
 							},
 							RhythmicEvent::Note {
 								pitches: vec![Pitch {
 									step: 4,
-									alteration: Rat32::default(),
+									alteration: Fraction::default(),
 								}],
 							},
 						),
 						(
 							Position {
 								measure: 1,
-								pos: Rat32::default(),
+								pos: Fraction::default(),
 								grace_index: 0,
 							},
 							RhythmicEvent::Note {
 								pitches: [Pitch {
 									step: 2,
-									alteration: Rat32::new(-1, 2),
+									alteration: Fraction::new(-1, 2),
 								}]
 								.into(),
 							},
