@@ -5,7 +5,7 @@ use crate::gui::GlobalState;
 
 use iced::{
 	Element, Length,
-	widget::{Column, button, column, row, rule, scrollable, text},
+	widget::{button, column, row, rule, scrollable, text},
 };
 
 #[derive(Debug, Default)]
@@ -25,23 +25,11 @@ impl Write {
 	}
 
 	pub fn view<'a>(&'a self, global: &'a GlobalState) -> Element<'a, Message> {
-		let side_panel = Column::from_vec(
-			[
-				// Side panel "Layouts" title/header
-				text("Layouts").into(),
-				rule::horizontal(2).into(),
-			]
-			.into_iter()
-			// Convert all layouts in `state.project` into side panel toggles
-			.chain(
-				global
-					.project
-					.layouts
-					.keys()
-					.map(|name| button(name.as_str()).into()), // TODO: Add functionality on button
-			)
-			.collect::<Vec<_>>(),
-		);
+		let mut side_panel = column![text("Layouts"), rule::horizontal(2)].spacing(10);
+
+		for name in global.project.layouts.keys() {
+			side_panel = side_panel.push(button(name.as_str())); // TODO: Add .on_press(...)
+		}
 
 		let viewport = scrollable(
 			text("Viewport placeholder")
