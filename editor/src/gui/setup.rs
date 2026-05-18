@@ -5,6 +5,7 @@ use crate::gui::GlobalState;
 
 use iced::{
 	Element,
+	keyboard::{Key, Modifiers},
 	widget::{scrollable, text},
 };
 
@@ -26,5 +27,11 @@ impl Setup {
 
 	pub fn view(&self, _global: &GlobalState) -> Element<'_, Message> {
 		scrollable(text("Setup screen placeholder")).into()
+	}
+
+	pub fn keyboard(key: Key, modifiers: Modifiers) -> Option<Message> {
+		Some(match (key, modifiers) {
+			_ => return None,
+		})
 	}
 }

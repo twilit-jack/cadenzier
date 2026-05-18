@@ -5,6 +5,7 @@ use crate::gui::GlobalState;
 
 use iced::{
 	Element, Length,
+	keyboard::{Key, Modifiers},
 	widget::{button, checkbox, column, row, rule, scrollable, text},
 };
 use std::collections::HashSet;
@@ -68,5 +69,14 @@ impl Write {
 		let status_bar = row![];
 
 		column![row![viewport, side_panel], status_bar].into()
+	}
+
+	pub fn keyboard(key: Key, modifiers: Modifiers) -> Option<Message> {
+		Some(match (key, modifiers) {
+			// Some examples so that I don't forget how to do this
+			//(Key::Named(Named::Escape), _) => Message::Hello,
+			//(Key::Character(char), mods) if char == "s".into() && mods.command() => Message::Save,
+			_ => return None,
+		})
 	}
 }

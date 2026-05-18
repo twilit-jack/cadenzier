@@ -8,6 +8,7 @@ use crate::gui::GlobalState;
 use cdnz::LayoutName;
 use iced::{
 	Element,
+	keyboard::{Key, Modifiers},
 	widget::{button, column, row, scrollable, svg},
 };
 
@@ -52,5 +53,11 @@ impl Render {
 		let statusbar = row![];
 
 		column![row![viewport, side_panel], statusbar].into()
+	}
+
+	pub fn keyboard(key: Key, modifiers: Modifiers) -> Option<Message> {
+		Some(match (key, modifiers) {
+			_ => return None,
+		})
 	}
 }

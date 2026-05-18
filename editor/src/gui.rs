@@ -11,10 +11,15 @@ use render::Render;
 use setup::Setup;
 use write::Write;
 
-use iced::{Element, Task};
+use iced::{
+	keyboard::{self, Event},
+	Element, Subscription, Task,
+};
 
 pub(super) fn run() -> iced::Result {
-	iced::application(State::default, update, view).run()
+	iced::application(State::default, update, view)
+		.subscription(subscription)
+		.run()
 }
 
 struct State {
@@ -42,6 +47,25 @@ enum Screen {
 	Setup(Setup),
 	Write(Write),
 	Help(Help),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum ScreenId {
+	Render,
+	Setup,
+	Write,
+	Help,
+}
+
+impl Screen {
+	pub fn get_id(&self) -> ScreenId {
+		match self {
+			Screen::Render(_) => ScreenId::Render,
+			Screen::Setup(_) => ScreenId::Setup,
+			Screen::Write(_) => ScreenId::Write,
+			Screen::Help(_) => ScreenId::Help,
+		}
+	}
 }
 
 #[derive(Debug, Clone)]
@@ -125,4 +149,18 @@ fn view(state: &State) -> Element<'_, Message> {
 	//	mode_button("Write", Screen::Write),
 	//	mode_button("Help", Screen::Help),
 	//];
+}
+
+fn subscription(state: &State) -> Subscription<Message> {
+	let screen_id = state.screen.get_id();
+	let map_event = move |event| match event {
+		Event::KeyPressed { key, modifiers, .. } => match screen_id {
+			ScreenId::Render => Render::keyboard(key, modifiers).map(Message::Render),
+			ScreenId::Setup => Setup::keyboard(key, modifiers).map(Message::Setup),
+			ScreenId::Write => Write::keyboard(key, modifiers).map(Message::Write),
+			ScreenId::Help => Help::keyboard(key, modifiers).map(Message::Help),
+		},
+		_ => None,
+	};
+	keyboard::listen().filter_map(map_event)
 }
