@@ -274,6 +274,10 @@ pub struct Position {
 	/// (0, 1) would be the start of the measure, (1, 2) – halfway through.
 	pub pos: Fraction,
 
+	/// Index used for ordering in grace notes.
+	///
+	/// For regular notes, this is `0`. For a grace note before a regular note, it would be `1`.
+	/// For a grace note before that grace note, this would be `2`, and so on.
 	pub grace_index: u32,
 }
 
