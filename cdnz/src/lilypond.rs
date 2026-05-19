@@ -3,8 +3,10 @@
 
 use super::*;
 
+use std::io::{self, Write};
+
 impl Project {
-	pub fn to_lilypond(&self) -> Vec<u8> {
-		todo!()
+	pub fn write_lilypond<W: Write>(&self, w: &mut W) -> io::Result<()> {
+		write!(w, "\\version \"2.26.0\"\n\n")
 	}
 }
