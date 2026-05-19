@@ -8,6 +8,10 @@ documentation = "https://docs.rs/cdnz"
 version = "0.2.0"
 edition = "2024"
 
+[features]
+default = []
+lilypond = []
+
 [dependencies]
 num = { version = "0.4.3", features = ["serde"] }
 thiserror = "2.0.18"

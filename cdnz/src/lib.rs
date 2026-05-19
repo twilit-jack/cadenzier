@@ -4,6 +4,7 @@
 #![doc = include_str!("../README.md")]
 
 pub mod cdnz_serde;
+#[cfg(feature = "lilypond")]
 pub mod lilypond;
 pub mod upgrade;
 
