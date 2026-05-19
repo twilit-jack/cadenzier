@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-cdnz = { path = "../cdnz" }
+cdnz = { path = "../cdnz", features = ["lilypond"] }
 ciborium = "0.2.2"
 dirs = "6.0.0"
 iced = { version = "0.14.0", features = ["canvas", "svg"] }
