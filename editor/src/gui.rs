@@ -11,6 +11,8 @@ use render::Render;
 use setup::Setup;
 use write::Write;
 
+use crate::config::Config;
+
 use iced::{
 	Element, Subscription, Task,
 	keyboard::{self, Event},
@@ -28,6 +30,7 @@ struct Editor {
 }
 
 struct GlobalState {
+	config: Config,
 	project: cdnz::Project,
 }
 
@@ -36,6 +39,7 @@ impl Default for Editor {
 		Self {
 			screen: Screen::Setup(Setup::default()),
 			global: GlobalState {
+				config: Config::load_from_disk().unwrap_or_default(),
 				project: cdnz::Project::default(),
 			},
 		}
