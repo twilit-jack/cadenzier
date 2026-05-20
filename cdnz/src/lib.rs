@@ -194,11 +194,38 @@ pub type LayoutName = String;
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Layout {
 	pub header: Header,
+	pub paper: PaperSettings,
 	pub layout: LayoutElement,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Header {}
+
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[skip_serializing_none]
+pub struct PaperSettings {
+	pub paper_height: Option<f64>,
+	pub paper_width: Option<f64>,
+
+	pub top_margin: Option<f64>,
+	pub bottom_margin: Option<f64>,
+	pub left_margin: Option<f64>,
+	pub right_margin: Option<f64>,
+	pub inner_margin: Option<f64>,
+	pub outer_margin: Option<f64>,
+
+	pub indent: Option<f64>,
+	pub short_indent: Option<f64>,
+
+	pub binding_offset: Option<f64>,
+
+	/// If this is set to `true`, systems will be set at their natural spacing, neither compressed
+	/// nor stretched vertically to fit the page.
+	pub ragged_bottom: Option<bool>,
+	/// If this is set to `false`, then the last page, and the last page in each section created
+	/// with a BookPart, will be vertically justified in the same way as the earlier pages.
+	pub ragged_last_bottom: Option<bool>,
+}
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum LayoutElement {
