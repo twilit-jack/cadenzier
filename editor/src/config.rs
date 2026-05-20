@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use std::{
 	fs::{File, create_dir_all},
@@ -72,13 +73,12 @@ impl Config {
 	pub fn save_to_disk(&self) -> Result<(), Error> {
 		let bytes = self.to_bytes()?;
 
-		let dir = dirs::config_dir()
-			.ok_or_else(|| Error::new(ErrorKind::NotFound, "Config directory not found"))?
-			.join("cadenza");
-
+		let proj_dirs = ProjectDirs::from("org", "twilit-jack", "Cadenza")
+			.ok_or(Error::new(ErrorKind::NotFound, "Home directory not found"))?;
+		let dir = proj_dirs.config_dir();
 		create_dir_all(&dir)?;
-
 		let path = dir.join("config.cbor");
+
 		let mut file = File::create(path)?;
 		file.write_all(&bytes)?;
 
@@ -86,10 +86,11 @@ impl Config {
 	}
 
 	pub fn load_from_disk() -> Result<Self, Error> {
-		let path = dirs::config_dir()
-			.ok_or_else(|| Error::new(ErrorKind::NotFound, "Config directory not found"))?
-			.join("cadenza")
-			.join("config.cbor");
+		let proj_dirs = ProjectDirs::from("org", "twilit-jack", "Cadenza")
+			.ok_or(Error::new(ErrorKind::NotFound, "Home directory not found"))?;
+		let dir = proj_dirs.config_dir();
+		create_dir_all(&dir)?;
+		let path = dir.join("config.cbor");
 
 		let file = File::open(path)?;
 		Self::from_reader(file)
