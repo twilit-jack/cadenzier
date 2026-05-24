@@ -87,7 +87,13 @@ impl Write {
 				.height(Length::Fill),
 		);
 
-		let status_bar = row![];
+		let mode_indicator = text(match self.mode {
+			Mode::Normal | Mode::Space | Mode::View => "NORMAL",
+			Mode::Insert => "INSERT",
+			Mode::Select => "SELECT",
+			Mode::Command => "COMMAND",
+		});
+		let status_bar = row![mode_indicator];
 
 		column![row![viewport, side_panel], status_bar].into()
 	}
