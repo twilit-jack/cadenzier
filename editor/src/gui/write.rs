@@ -4,22 +4,39 @@
 use crate::gui::GlobalState;
 
 use iced::{
-	Element, Length,
 	keyboard::{Key, Modifiers},
 	widget::{button, checkbox, column, row, rule, scrollable, text},
+	Element, Length,
 };
 use std::collections::HashSet;
 
 #[derive(Debug, Default)]
 pub struct Write {
+	pub mode: Mode,
+
 	/// Set of all parts in the active project which are hidden in write viewport.
 	///
 	/// Parts which aren't in this set are shown.
 	pub hidden_parts: HashSet<cdnz::PartName>,
 }
 
+/// Helix-like editing mode.
+#[derive(Debug, Default, Clone)]
+pub enum Mode {
+	#[default]
+	Normal,
+	Insert,
+	Select,
+	Command,
+
+	Space,
+	View,
+}
+
 #[derive(Debug, Clone)]
 pub enum Message {
+	SetMode(Mode),
+
 	/// If `bool` is `true`, part will be visible. If `bool` is `false`, part will be hidden.
 	TogglePartVisibility(cdnz::PartName, bool),
 	JumpToPart(cdnz::PartName),
@@ -33,6 +50,10 @@ pub enum Action {
 impl Write {
 	pub fn update(&mut self, _global: &mut GlobalState, message: Message) -> Action {
 		match message {
+			Message::SetMode(mode) => {
+				self.mode = mode;
+				Action::None
+			}
 			Message::TogglePartVisibility(name, is_visible) => {
 				if is_visible {
 					self.hidden_parts.remove(&name);
