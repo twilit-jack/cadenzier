@@ -6,15 +6,12 @@ jobs:
       - name: Checkout repository
         uses: https://code.forgejo.org/actions/checkout@v4
 
-      - name: Setup Typst
-        uses: https://github.com/lvignoli/typst-action@main
-        with:
-          version: '0.13.0'
-
-      - name: Compile Typst to HTML
+      - name: Setup and Compile Typst
         run: |
+          wget https://github.com/typst/typst/releases/download/v0.13.0/typst-x86_64-unknown-linux-musl.tar.xz
+          tar -xf typst-x86_64-unknown-linux-musl.tar.xz
           mkdir -p docs/output/html
-          typst compile --features=html --format=html docs/src/main.typ docs/output/html/index.html
+          ./typst-x86_64-unknown-linux-musl/typst compile --features=html --format=html docs/src/main.typ docs/output/html/index.html
 
       - name: Publish to Pages
         uses: https://codeberg.org/git-pages/action@v2
