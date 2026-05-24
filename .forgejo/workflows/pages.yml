@@ -7,7 +7,7 @@ jobs:
         uses: https://code.forgejo.org/actions/checkout@v4
 
       - name: Setup Typst
-        uses: https://github.com/lvignoli/typst-action@v1
+        uses: https://github.com/lvignoli/typst-action@main
         with:
           version: '0.13.0'
 
