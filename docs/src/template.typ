@@ -1,0 +1,3 @@
+#let style(body) = {
+	body
+}
