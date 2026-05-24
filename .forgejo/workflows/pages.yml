@@ -1,3 +1,4 @@
+name: Pages
 on: [push]
 jobs:
   test:
@@ -6,16 +7,20 @@ jobs:
       - name: Checkout repository
         uses: https://code.forgejo.org/actions/checkout@v4
 
-      - name: Setup and Compile Typst
+      - name: Setup Python
+        uses: https://code.forgejo.org/actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - name: Install Zensical
+        run: pip install zensical
+      - name: Build site
         run: |
-          wget https://github.com/typst/typst/releases/download/v0.13.0/typst-x86_64-unknown-linux-musl.tar.xz
-          tar -xf typst-x86_64-unknown-linux-musl.tar.xz
-          mkdir -p docs/output/html
-          ./typst-x86_64-unknown-linux-musl/typst compile --features=html --format=html docs/src/main.typ docs/output/html/index.html
+          cd docs
+          zensical build
 
       - name: Publish to Pages
         uses: https://codeberg.org/git-pages/action@v2
         with:
           site: 'https://${{ forge.repository_owner }}.codeberg.page/cadenza/'
           token: ${{ forge.token }}
-          source: docs/output/html/
+          source: docs/site/
