@@ -23,20 +23,13 @@ impl Keybind {
 	}
 }
 
-/// Mirror enum of `iced::keyboard::Key` that implements `Serialize` and `Deserialize`.
+/// Mirror type of `iced::keyboard::Key` that implements `Serialize` and `Deserialize`.
+///
+/// Also less type-safe, as it doesn't differentiate `Key::Named` from `Key::Character` or
+/// `Key::Unidentified`, but in practice, this doesn't matter, as there are no runtime situations
+/// that make this a problem.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Key {
-	/// A key with an established name.
-	Named(String),
-
-	/// A key string that corresponds to the character typed by the user, taking into account the
-	/// user’s current locale setting, and any system-level keyboard mapping overrides that are in
-	/// effect.
-	Character(String),
-
-	/// An unidentified key.
-	Unidentified,
-}
+pub struct Key(String);
 
 impl From<kb::Key> for Key {
 	fn from(key: kb::Key) -> Self {
@@ -46,10 +39,16 @@ impl From<kb::Key> for Key {
 			// In all honesty, this should be watched, and future config conversion scripts should do
 			// a bit of string conversion if `iced::keyboard::key::Named` ever changes (though it might
 			// not change)
-			kb::Key::Named(name) => Self::Named(format!("{name:?}")),
-			kb::Key::Character(char) => Self::Character(char.to_string()),
-			kb::Key::Unidentified => Self::Unidentified,
+			kb::Key::Named(name) => Self(format!("{name:?}")),
+			kb::Key::Character(char) => Self(char.into()),
+			kb::Key::Unidentified => Self("".into()),
 		}
+	}
+}
+
+impl From<&str> for Key {
+	fn from(str: &str) -> Self {
+		Self(str.into())
 	}
 }
 

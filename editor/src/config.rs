@@ -4,7 +4,7 @@
 pub mod keyboard;
 
 use crate::{
-	config::keyboard::{Key, Modifiers},
+	config::keyboard::Modifiers,
 	gui::{GlobalMessage, Message, ScreenId},
 };
 use keyboard::Keybind;
@@ -36,14 +36,14 @@ impl Default for Config {
 					BTreeMap::from([
 						(
 							Keybind {
-								key: Key::Character("a".into()),
+								key: "a".into(),
 								modifiers: Modifiers::none(),
 							},
 							Message::Global(GlobalMessage::DebugPrint),
 						),
 						(
 							Keybind {
-								key: Key::Named("Tab".into()),
+								key: "Tab".into(),
 								modifiers: Modifiers::none(),
 							},
 							Message::Global(GlobalMessage::DebugPrint),
