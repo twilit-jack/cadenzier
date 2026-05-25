@@ -1,7 +1,7 @@
 name: Pages
 on: [push]
 jobs:
-  test:
+  deploy-pages:
     runs-on: codeberg-small-lazy
     steps:
       - name: Checkout repository
@@ -18,7 +18,7 @@ jobs:
           cd docs
           zensical build
 
-      - name: Publish to Pages
+      - name: Deploy to Pages
         uses: https://codeberg.org/git-pages/action@v2
         with:
           site: 'https://${{ forge.repository_owner }}.codeberg.page/cadenza/'
