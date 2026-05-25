@@ -80,6 +80,27 @@ pub enum Message {
 	Help(help::Message),
 }
 
+impl From<render::Message> for Message {
+	fn from(message: render::Message) -> Self {
+		Self::Render(message)
+	}
+}
+impl From<setup::Message> for Message {
+	fn from(message: setup::Message) -> Self {
+		Self::Setup(message)
+	}
+}
+impl From<write::Message> for Message {
+	fn from(message: write::Message) -> Self {
+		Self::Write(message)
+	}
+}
+impl From<help::Message> for Message {
+	fn from(message: help::Message) -> Self {
+		Self::Help(message)
+	}
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum GlobalMessage {
 	/// Prints debug text to show that the message was recieved.
