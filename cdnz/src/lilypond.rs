@@ -1,6 +1,13 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit-jack@gmail.com>
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
+//! Implements CDNZ -> LilyPond capabilities.
+//!
+//! > WARNING: Currently a work-in-progress. API in flux. Barely functions.
+//!
+//! LilyPond -> CDNZ is not planned in the near future, but might be implemented much later down the
+//! line.
+
 use super::*;
 
 use std::io::{self, Write};
