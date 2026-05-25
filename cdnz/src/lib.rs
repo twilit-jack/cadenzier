@@ -198,10 +198,10 @@ pub struct Layout {
 	pub layout: LayoutElement,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 pub struct Header {}
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 #[skip_serializing_none]
 pub struct PaperSettings {
 	pub paper_height: Option<f64>,
