@@ -134,7 +134,12 @@ fn create_beethoven_project() -> Project {
 		layouts: [(
 			"Final Score".into(),
 			Layout {
-				header: Header {},
+				header: Header {
+					..Default::default()
+				},
+				paper: PaperSettings {
+					..Default::default()
+				},
 				layout: LayoutElement::Staff {
 					voices: [LayoutVoice {
 						referenced_voice: "Piano".into(),
