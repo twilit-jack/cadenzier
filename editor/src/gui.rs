@@ -6,17 +6,15 @@ mod render;
 mod setup;
 mod write;
 
+use crate::config::{Config, keyboard::Keybind};
+
 use help::Help;
 use render::Render;
+use serde::{Deserialize, Serialize};
 use setup::Setup;
 use write::Write;
 
-use crate::config::Config;
-
-use iced::{
-	Element, Subscription, Task,
-	keyboard::{self, Event},
-};
+use iced::{Element, Subscription, Task, keyboard};
 
 pub(super) fn run() -> iced::Result {
 	iced::application(Editor::default, Editor::update, Editor::view)
@@ -53,8 +51,8 @@ enum Screen {
 	Help(Help),
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-enum ScreenId {
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum ScreenId {
 	Render,
 	Setup,
 	Write,
@@ -72,17 +70,34 @@ impl Screen {
 	}
 }
 
-#[derive(Debug, Clone)]
-enum Message {
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub enum Message {
+	Global(GlobalMessage),
+
 	Render(render::Message),
 	Setup(setup::Message),
 	Write(write::Message),
 	Help(help::Message),
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
+pub enum GlobalMessage {
+	/// Prints debug text to show that the message was recieved.
+	DebugPrint,
+}
+
 impl Editor {
 	fn update(&mut self, message: Message) -> Task<Message> {
 		match message {
+			Message::Global(message) => {
+				use GlobalMessage as Msg;
+				match message {
+					Msg::DebugPrint => {
+						eprintln!("Debug print message recieved!");
+						return Task::none();
+					}
+				}
+			}
 			Message::Render(message) => {
 				let Screen::Render(render) = &mut self.screen else {
 					return Task::none();
@@ -158,15 +173,16 @@ impl Editor {
 
 	fn subscription(&self) -> Subscription<Message> {
 		let screen_id = self.screen.get_id();
-		let map_event = move |event| match event {
-			Event::KeyPressed { key, modifiers, .. } => match screen_id {
-				ScreenId::Render => Render::keyboard(key, modifiers).map(Message::Render),
-				ScreenId::Setup => Setup::keyboard(key, modifiers).map(Message::Setup),
-				ScreenId::Write => Write::keyboard(key, modifiers).map(Message::Write),
-				ScreenId::Help => Help::keyboard(key, modifiers).map(Message::Help),
-			},
-			_ => None,
+		let Some(keybinds) = self.global.config.keybinds.get(&screen_id) else {
+			return Subscription::none();
 		};
-		keyboard::listen().filter_map(map_event)
+
+		let keybinds = keybinds.clone();
+		keyboard::listen()
+			.with(keybinds)
+			.filter_map(|(keybinds, event)| {
+				let keybind = Keybind::from_event(event)?;
+				Some(keybinds.get(&keybind)?.clone())
+			})
 	}
 }

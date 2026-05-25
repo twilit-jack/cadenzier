@@ -4,10 +4,10 @@
 use crate::gui::GlobalState;
 
 use iced::{
-	keyboard::{Key, Modifiers},
-	widget::{button, checkbox, column, row, rule, scrollable, text},
 	Element, Length,
+	widget::{button, checkbox, column, row, rule, scrollable, text},
 };
+use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
 #[derive(Debug, Default)]
@@ -21,7 +21,7 @@ pub struct Write {
 }
 
 /// Helix-like editing mode.
-#[derive(Debug, Default, Clone)]
+#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum Mode {
 	#[default]
 	Normal,
@@ -33,7 +33,7 @@ pub enum Mode {
 	View,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum Message {
 	SetMode(Mode),
 
@@ -96,14 +96,5 @@ impl Write {
 		let status_bar = row![mode_indicator];
 
 		column![row![viewport, side_panel], status_bar].into()
-	}
-
-	pub fn keyboard(key: Key, modifiers: Modifiers) -> Option<Message> {
-		Some(match (key, modifiers) {
-			// Some examples so that I don't forget how to do this
-			//(Key::Named(Named::Escape), _) => Message::Hello,
-			//(Key::Character(char), mods) if char == "s".into() && mods.command() => Message::Save,
-			_ => return None,
-		})
 	}
 }

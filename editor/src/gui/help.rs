@@ -5,14 +5,14 @@ use crate::gui::GlobalState;
 
 use iced::{
 	Element,
-	keyboard::{Key, Modifiers},
 	widget::{scrollable, text},
 };
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default)]
 pub struct Help {}
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum Message {}
 
 #[derive(Debug, Clone)]
@@ -27,11 +27,5 @@ impl Help {
 
 	pub fn view(&self, _global: &GlobalState) -> Element<'_, Message> {
 		scrollable(text("Help screen placeholder")).into()
-	}
-
-	pub fn keyboard(key: Key, modifiers: Modifiers) -> Option<Message> {
-		Some(match (key, modifiers) {
-			_ => return None,
-		})
 	}
 }

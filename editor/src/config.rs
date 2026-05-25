@@ -1,9 +1,18 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+pub mod keyboard;
+
+use crate::{
+	config::keyboard::{Key, Modifiers},
+	gui::{GlobalMessage, Message, ScreenId},
+};
+use keyboard::Keybind;
+
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use std::{
+	collections::BTreeMap,
 	fs::{File, create_dir_all},
 	io::{Error, ErrorKind, Read, Write},
 };
@@ -11,13 +20,40 @@ use std::{
 // ======== DEFS ========
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Config {}
+pub struct Config {
+	pub keybinds: BTreeMap<ScreenId, BTreeMap<Keybind, Message>>,
+}
 
 // ======== DEFAULT ========
 
 impl Default for Config {
 	fn default() -> Self {
-		Self {}
+		Self {
+			keybinds: BTreeMap::from([
+				(ScreenId::Render, BTreeMap::from([])),
+				(
+					ScreenId::Setup,
+					BTreeMap::from([
+						(
+							Keybind {
+								key: Key::Character("a".into()),
+								modifiers: Modifiers::none(),
+							},
+							Message::Global(GlobalMessage::DebugPrint),
+						),
+						(
+							Keybind {
+								key: Key::Named("Tab".into()),
+								modifiers: Modifiers::none(),
+							},
+							Message::Global(GlobalMessage::DebugPrint),
+						),
+					]),
+				),
+				(ScreenId::Write, BTreeMap::from([])),
+				(ScreenId::Help, BTreeMap::from([])),
+			]),
+		}
 	}
 }
 

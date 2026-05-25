@@ -8,9 +8,9 @@ use crate::gui::GlobalState;
 use cdnz::LayoutName;
 use iced::{
 	Element,
-	keyboard::{Key, Modifiers},
 	widget::{button, column, row, scrollable, svg},
 };
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default)]
 pub struct Render {
@@ -18,7 +18,7 @@ pub struct Render {
 	pub svgs: HashMap<LayoutName, Vec<svg::Handle>>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum Message {}
 
 #[derive(Debug, Clone)]
@@ -53,11 +53,5 @@ impl Render {
 		let statusbar = row![];
 
 		column![row![viewport, side_panel], statusbar].into()
-	}
-
-	pub fn keyboard(key: Key, modifiers: Modifiers) -> Option<Message> {
-		Some(match (key, modifiers) {
-			_ => return None,
-		})
 	}
 }
