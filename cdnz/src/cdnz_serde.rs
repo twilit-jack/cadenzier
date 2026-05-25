@@ -1,6 +1,23 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit-jack@gmail.com>
 // SPDX-License-Identifier: LGPL-3.0-or-later
 
+//! Implements serialization and deserialization functions for `cdnz::Project`.
+//!
+//! Typically, for serialization you'll want the `to_cdnz()` method, and for deserialization – the
+//! `from_bytes()` method.
+//!
+//! Internally, this makes use of CBOR and Zstd to achieve a small footprint on disk. In the base
+//! compresed version (CDNZ), 4 magic bytes `b"CDNZ"` are added to the start of the file, then the
+//! `Project` gets serialized to CBOR, then encoded via Zstd, and placed in a container struct
+//! (`CborContainer`), which also includes version info, and then serialized to CBOR again, which is
+//! added after the magic bytes.
+//!
+//! The uncompressed version (CDNX) uses `b"CDNX"` as the magic bytes, and it doesn't compress the
+//! serialized `Project` (internally called the "payload").
+//!
+//! This style of composability means that the magic bytes and version string are still accessible
+//! without decompressing the main Zstd-compressed data.
+
 use super::*;
 use crate::upgrade::CdnzUpgradeError;
 
