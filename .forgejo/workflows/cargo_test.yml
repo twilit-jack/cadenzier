@@ -12,11 +12,20 @@ jobs:
       - name: Checkout
         uses: https://code.forgejo.org/actions/checkout@v4
 
-      - name: Setup Rust
-        uses: https://code.forgejo.org/actions/setup-rust@v1
+      - name: Cache Rust
+        uses: https://code.forgejo.org/actions/cache@v4
         with:
-          rust-version: stable
-          components: clippy
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            target/
+          key: cargo-${{ hashFiles('**/Cargo.toml') }}
+
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https:
 
       - name: Run tests
         run: cargo test --verbose
