@@ -1,10 +1,18 @@
 name: Cargo Test
 on:
   push:
+    branches: [main]
     paths:
-      - 'cdnz/**'
-      - 'editor/**'
-      - 'Cargo.lock'
+      - '**/*.rs'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '**/*.rs'
+      - '**/Cargo.toml'
+      - '**/Cargo.lock'
 jobs:
   test:
     runs-on: codeberg-medium-lazy
