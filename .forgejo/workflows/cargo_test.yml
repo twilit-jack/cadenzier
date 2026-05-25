@@ -1,0 +1,22 @@
+name: Cargo Test
+on:
+  push:
+    paths:
+      - 'cdnz/**'
+      - 'editor/**'
+      - 'Cargo.lock'
+jobs:
+  test:
+    runs-on: codeberg-medium-lazy
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+
+      - name: Setup Rust
+        uses: https://code.forgejo.org/actions/setup-rust@v1
+        with:
+          rust-version: stable
+          components: clippy
+
+      - name: Run tests
+        run: cargo test --verbose
