@@ -1,6 +1,8 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+use std::fmt::Display;
+
 use iced::keyboard::{self as kb, Event};
 use serde::{Deserialize, Serialize};
 
@@ -20,6 +22,27 @@ impl Keybind {
 			}),
 			_ => None,
 		}
+	}
+}
+
+impl Display for Keybind {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		write!(
+			f,
+			"{}{}{}{}",
+			if self.modifiers.command {
+				if cfg!(target_os = "macos") {
+					"Cmd+"
+				} else {
+					"Ctrl+"
+				}
+			} else {
+				""
+			},
+			if self.modifiers.alt { "Alt+" } else { "" },
+			if self.modifiers.shift { "Shift+" } else { "" },
+			self.key.0.to_uppercase(),
+		)
 	}
 }
 
@@ -58,17 +81,17 @@ impl From<&str> for Key {
 /// manipulation.
 #[derive(Debug, Default, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Modifiers {
-	pub shift: bool,
 	pub command: bool,
 	pub alt: bool,
+	pub shift: bool,
 }
 
 impl From<kb::Modifiers> for Modifiers {
 	fn from(mods: kb::Modifiers) -> Self {
 		Self {
-			shift: mods.shift(),
 			command: mods.command(),
 			alt: mods.alt(),
+			shift: mods.shift(),
 		}
 	}
 }
@@ -77,5 +100,23 @@ impl Modifiers {
 	/// Semantic wrapper for `default()`.
 	pub fn none() -> Self {
 		Self::default()
+	}
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn keybind_display() {
+		let keybind = Keybind {
+			key: "a".into(),
+			modifiers: Modifiers {
+				command: true,
+				shift: true,
+				..Default::default()
+			},
+		};
+		assert_eq!(format!("{keybind}"), "Ctrl+Shift+A");
 	}
 }
