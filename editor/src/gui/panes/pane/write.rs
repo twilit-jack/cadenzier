@@ -1,16 +1,15 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use crate::gui::GlobalState;
-
 use iced::{
 	Element, Length,
 	widget::{button, checkbox, column, row, rule, scrollable, text},
 };
-use serde::{Deserialize, Serialize};
 use std::collections::HashSet;
 
-#[derive(Debug, Default)]
+use crate::config::Config;
+
+#[derive(Debug, Clone, Default)]
 pub struct Write {
 	pub mode: Mode,
 
@@ -21,7 +20,7 @@ pub struct Write {
 }
 
 /// Helix-like editing mode.
-#[derive(Debug, Default, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
+#[derive(Debug, Clone, Copy, Default)]
 pub enum Mode {
 	#[default]
 	Normal,
@@ -33,7 +32,7 @@ pub enum Mode {
 	View,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
+#[derive(Debug, Clone)]
 pub enum Message {
 	SetMode(Mode),
 
@@ -42,36 +41,31 @@ pub enum Message {
 	JumpToPart(cdnz::PartName),
 }
 
-#[derive(Debug, Clone)]
-pub enum Action {
-	None,
-}
-
 impl Write {
-	pub fn update(&mut self, _global: &mut GlobalState, message: Message) -> Action {
+	pub fn update(&mut self, message: Message) {
 		match message {
-			Message::SetMode(mode) => {
-				self.mode = mode;
-				Action::None
-			}
+			Message::SetMode(mode) => self.mode = mode,
 			Message::TogglePartVisibility(name, is_visible) => {
 				if is_visible {
 					self.hidden_parts.remove(&name);
 				} else {
 					self.hidden_parts.insert(name);
 				}
-				Action::None
 			}
 			Message::JumpToPart(_name) => todo!(),
 		}
 	}
 
-	pub fn view<'a>(&'a self, global: &'a GlobalState) -> Element<'a, Message> {
+	pub fn view<'a>(
+		&'a self,
+		_config: &'a Config,
+		project: &'a cdnz::Project,
+	) -> Element<'a, Message> {
 		// Side panel: Shows a list of all parts for toggling which ones are shown, as well as a jump
 		// to a specific part.
 		let mut side_panel = column![text("Parts"), rule::horizontal(2)].spacing(10);
 
-		for name in global.project.parts.keys() {
+		for name in project.parts.keys() {
 			let is_visible = !self.hidden_parts.contains(name);
 
 			side_panel = side_panel.push(row![

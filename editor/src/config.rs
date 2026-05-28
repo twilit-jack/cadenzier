@@ -3,11 +3,7 @@
 
 pub mod keyboard;
 
-use crate::{
-	config::keyboard::Modifiers,
-	gui::{GlobalMessage, Message, ScreenId},
-};
-use keyboard::Keybind;
+use keyboard::*;
 
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
@@ -21,7 +17,7 @@ use std::{
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
-	pub keybinds: BTreeMap<ScreenId, BTreeMap<Keybind, Message>>,
+	pub keybinds: BTreeMap<keyboard::Context, BTreeMap<Keybind, keyboard::Command>>,
 }
 
 // ======== DEFAULT ========
@@ -30,28 +26,28 @@ impl Default for Config {
 	fn default() -> Self {
 		Self {
 			keybinds: BTreeMap::from([
-				(ScreenId::Render, BTreeMap::from([])),
+				(keyboard::Context::Render, BTreeMap::from([])),
 				(
-					ScreenId::Setup,
+					keyboard::Context::Setup,
 					BTreeMap::from([
 						(
 							Keybind {
 								key: "a".into(),
 								modifiers: Modifiers::none(),
 							},
-							Message::Global(GlobalMessage::DebugPrint),
+							keyboard::Command::Global(GlobalCmd::DebugPrint),
 						),
 						(
 							Keybind {
 								key: "Tab".into(),
 								modifiers: Modifiers::none(),
 							},
-							Message::Global(GlobalMessage::DebugPrint),
+							keyboard::Command::Global(GlobalCmd::DebugPrint),
 						),
 					]),
 				),
-				(ScreenId::Write, BTreeMap::from([])),
-				(ScreenId::Help, BTreeMap::from([])),
+				(keyboard::Context::Write, BTreeMap::from([])),
+				(keyboard::Context::Help, BTreeMap::from([])),
 			]),
 		}
 	}

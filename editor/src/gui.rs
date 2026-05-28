@@ -1,200 +1,90 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-mod help;
-mod render;
-mod setup;
-mod write;
+mod panes;
+mod style;
 
-use crate::config::{Config, keyboard::Keybind};
+use self::panes::Panes;
+use crate::{
+	config::{
+		keyboard::{Command, Context, Keybind},
+		Config,
+	},
+	gui::panes::pane::PaneContent,
+};
 
-use help::Help;
-use render::Render;
-use serde::{Deserialize, Serialize};
-use setup::Setup;
-use write::Write;
-
-use iced::{Element, Subscription, Task, keyboard};
+use iced::{keyboard, Element, Settings, Subscription, Task};
+use std::borrow::Cow;
 
 pub(super) fn run() -> iced::Result {
 	iced::application(Editor::default, Editor::update, Editor::view)
 		.subscription(Editor::subscription)
+		.settings(Editor::settings())
 		.run()
 }
 
 struct Editor {
-	screen: Screen,
-	global: GlobalState,
-}
+	panes: Panes,
 
-struct GlobalState {
 	config: Config,
 	project: cdnz::Project,
+}
+
+#[derive(Debug, Clone)]
+pub enum Message {
+	/// Prints debug text to show that the message was recieved.
+	DebugPrint,
+
+	Pane(panes::Message),
 }
 
 impl Default for Editor {
 	fn default() -> Self {
 		Self {
-			screen: Screen::Setup(Setup::default()),
-			global: GlobalState {
-				config: Config::load_from_disk().unwrap_or_default(),
-				project: cdnz::Project::default(),
-			},
+			panes: Panes::default(),
+
+			config: Config::load_from_disk().unwrap_or_default(),
+			project: cdnz::Project::default(),
 		}
 	}
-}
-
-enum Screen {
-	Render(Render),
-	Setup(Setup),
-	Write(Write),
-	Help(Help),
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ScreenId {
-	Render,
-	Setup,
-	Write,
-	Help,
-}
-
-impl Screen {
-	pub fn get_id(&self) -> ScreenId {
-		match self {
-			Screen::Render(_) => ScreenId::Render,
-			Screen::Setup(_) => ScreenId::Setup,
-			Screen::Write(_) => ScreenId::Write,
-			Screen::Help(_) => ScreenId::Help,
-		}
-	}
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
-pub enum Message {
-	Global(GlobalMessage),
-
-	Render(render::Message),
-	Setup(setup::Message),
-	Write(write::Message),
-	Help(help::Message),
-}
-
-impl From<render::Message> for Message {
-	fn from(message: render::Message) -> Self {
-		Self::Render(message)
-	}
-}
-impl From<setup::Message> for Message {
-	fn from(message: setup::Message) -> Self {
-		Self::Setup(message)
-	}
-}
-impl From<write::Message> for Message {
-	fn from(message: write::Message) -> Self {
-		Self::Write(message)
-	}
-}
-impl From<help::Message> for Message {
-	fn from(message: help::Message) -> Self {
-		Self::Help(message)
-	}
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Hash)]
-pub enum GlobalMessage {
-	/// Prints debug text to show that the message was recieved.
-	DebugPrint,
 }
 
 impl Editor {
 	fn update(&mut self, message: Message) -> Task<Message> {
 		match message {
-			Message::Global(message) => {
-				use GlobalMessage as Msg;
-				match message {
-					Msg::DebugPrint => {
-						eprintln!("Debug print message recieved!");
-						return Task::none();
-					}
-				}
+			Message::DebugPrint => {
+				eprintln!("Debug print message recieved!");
+				Task::none()
 			}
-			Message::Render(message) => {
-				let Screen::Render(render) = &mut self.screen else {
-					return Task::none();
-				};
-				let action = render.update(&mut self.global, message);
-				match action {
-					render::Action::None => Task::none(),
-				}
-			}
-			Message::Setup(message) => {
-				let Screen::Setup(setup) = &mut self.screen else {
-					return Task::none();
-				};
-				let action = setup.update(&mut self.global, message);
-				match action {
-					setup::Action::None => Task::none(),
-				}
-			}
-			Message::Write(message) => {
-				let Screen::Write(write) = &mut self.screen else {
-					return Task::none();
-				};
-				let action = write.update(&mut self.global, message);
-				match action {
-					write::Action::None => Task::none(),
-				}
-			}
-			Message::Help(message) => {
-				let Screen::Help(help) = &mut self.screen else {
-					return Task::none();
-				};
-				let action = help.update(&mut self.global, message);
-				match action {
-					help::Action::None => Task::none(),
-				}
+			Message::Pane(message) => {
+				self.panes.update(message);
+				Task::none()
 			}
 		}
 	}
 
 	fn view(&self) -> Element<'_, Message> {
-		match &self.screen {
-			Screen::Render(render) => render.view(&self.global).map(Message::Render),
-			Screen::Setup(setup) => setup.view(&self.global).map(Message::Setup),
-			Screen::Write(write) => write.view(&self.global).map(Message::Write),
-			Screen::Help(help) => help.view(&self.global).map(Message::Help),
-		}
-		//let mode_button = |label: &'static str, screen: Screen| {
-		//	button(label)
-		//		.on_press(Message::ScreenSwitch(screen))
-		//		.style(move |theme: &Theme, _| {
-		//			let palette = theme.extended_palette();
-		//			let active = self.screen;
-		//			button::Style {
-		//				background: Some(
-		//					if active {
-		//						palette.primary.base.color
-		//					} else {
-		//						palette.background.base.color
-		//					}
-		//					.into(),
-		//				),
-		//				text_color: palette.background.base.text,
-		//				..button::Style::default()
-		//			}
-		//		})
-		//};
-		//let mode_switch_buttons = row![
-		//	mode_button("Setup", Screen::Setup),
-		//	mode_button("Write", Screen::Write),
-		//	mode_button("Help", Screen::Help),
-		//];
+		self.panes
+			.view(&self.config, &self.project)
+			.map(Message::Pane)
 	}
 
 	fn subscription(&self) -> Subscription<Message> {
-		let screen_id = self.screen.get_id();
-		let Some(keybinds) = self.global.config.keybinds.get(&screen_id) else {
+		let Some(focused_pane_id) = self.panes.focus else {
+			return Subscription::none();
+		};
+		let Some(focused_pane) = self.panes.panes.get(focused_pane_id) else {
+			return Subscription::none();
+		};
+		let context = match focused_pane.content {
+			PaneContent::Blank(_) => Context::Blank,
+			PaneContent::Render(_) => Context::Render,
+			PaneContent::Setup(_) => Context::Setup,
+			PaneContent::Write(_) => Context::Write,
+			PaneContent::Help(_) => Context::Help,
+		};
+
+		let Some(keybinds) = self.config.keybinds.get(&context) else {
 			return Subscription::none();
 		};
 
@@ -205,5 +95,45 @@ impl Editor {
 				let keybind = Keybind::from_event(event)?;
 				Some(keybinds.get(&keybind)?.clone())
 			})
+			.filter_map(|command| {
+				#[allow(unused_imports)] // Will be expanded in the near future
+				use crate::config::keyboard::{
+					BlankCmd, GlobalCmd, HelpCmd, RenderCmd, SetupCmd, ViewCmd, WriteCmd,
+				};
+				Some(match command {
+					Command::Global(command) => match command {
+						GlobalCmd::DebugPrint => Message::DebugPrint,
+					},
+					Command::View(command) => match command {
+						//ViewCmd:: => Message::,
+					},
+					Command::Blank(command) => match command {
+						//BlankCmd:: => Message::,
+					},
+					Command::Render(command) => match command {
+						//RenderCmd:: => Message::,
+					},
+					Command::Setup(command) => match command {
+						//SetupCmd:: => Message::,
+					},
+					Command::Write(command) => match command {
+						//WriteCmd:: => Message::,
+					},
+					Command::Help(command) => match command {
+						//HelpCmd:: => Message::,
+					},
+				})
+			})
+	}
+
+	fn settings() -> Settings {
+		Settings {
+			fonts: vec![
+				Cow::Borrowed(include_bytes!("../fonts/fa_7_regular_400.otf")),
+				Cow::Borrowed(include_bytes!("../fonts/fa_7_solid_900.otf")),
+				Cow::Borrowed(include_bytes!("../fonts/fa_7_brands_400.otf")),
+			],
+			..Settings::default()
+		}
 	}
 }

@@ -103,6 +103,51 @@ impl Modifiers {
 	}
 }
 
+/// Dictates a certain context in which a keybind is active.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Context {
+	Global,
+	View,
+
+	// Panes
+	Blank,
+	Render,
+	Setup,
+	Write,
+	Help,
+}
+
+/// Commands that get triggered by keybinds, and are usually mapped to messages.
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Command {
+	Global(GlobalCmd),
+	View(ViewCmd),
+
+	// Panes
+	Blank(BlankCmd),
+	Render(RenderCmd),
+	Setup(SetupCmd),
+	Write(WriteCmd),
+	Help(HelpCmd),
+}
+
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum GlobalCmd {
+	DebugPrint,
+}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum ViewCmd {}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum BlankCmd {}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum RenderCmd {}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum SetupCmd {}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum WriteCmd {}
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum HelpCmd {}
+
 #[cfg(test)]
 mod tests {
 	use super::*;
