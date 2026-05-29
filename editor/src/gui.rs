@@ -7,14 +7,17 @@ mod style;
 use self::panes::Panes;
 use crate::{
 	config::{
-		keyboard::{Command, Context, Keybind},
 		Config,
+		keyboard::{Command, Context, Keybind},
 	},
 	gui::panes::pane::PaneContent,
 };
 
-use iced::{keyboard, Element, Settings, Subscription, Task};
-use std::borrow::Cow;
+use iced::{
+	Element, Settings, Subscription, Task, keyboard,
+	widget::pane_grid::{Axis, Direction},
+};
+use std::{borrow::Cow, collections::BTreeMap};
 
 pub(super) fn run() -> iced::Result {
 	iced::application(Editor::default, Editor::update, Editor::view)
@@ -35,7 +38,7 @@ pub enum Message {
 	/// Prints debug text to show that the message was recieved.
 	DebugPrint,
 
-	Pane(panes::Message),
+	Panes(panes::Message),
 }
 
 impl Default for Editor {
@@ -56,7 +59,7 @@ impl Editor {
 				eprintln!("Debug print message recieved!");
 				Task::none()
 			}
-			Message::Pane(message) => {
+			Message::Panes(message) => {
 				self.panes.update(message);
 				Task::none()
 			}
@@ -66,34 +69,44 @@ impl Editor {
 	fn view(&self) -> Element<'_, Message> {
 		self.panes
 			.view(&self.config, &self.project)
-			.map(Message::Pane)
+			.map(Message::Panes)
 	}
 
 	fn subscription(&self) -> Subscription<Message> {
-		let Some(focused_pane_id) = self.panes.focus else {
-			return Subscription::none();
-		};
-		let Some(focused_pane) = self.panes.panes.get(focused_pane_id) else {
-			return Subscription::none();
-		};
-		let context = match focused_pane.content {
-			PaneContent::Blank(_) => Context::Blank,
-			PaneContent::Render(_) => Context::Render,
-			PaneContent::Setup(_) => Context::Setup,
-			PaneContent::Write(_) => Context::Write,
-			PaneContent::Help(_) => Context::Help,
-		};
+		let focused_pane_id = self.panes.focus;
 
-		let Some(keybinds) = self.config.keybinds.get(&context) else {
-			return Subscription::none();
-		};
+		// Identify active contexts
+		let mut active_contexts = vec![Context::Global, Context::View];
 
-		let keybinds = keybinds.clone();
+		if let Some(id) = focused_pane_id {
+			if let Some(pane) = self.panes.panes.get(id) {
+				active_contexts.push(match pane.content {
+					PaneContent::Blank(_) => Context::Blank,
+					PaneContent::Render(_) => Context::Render,
+					PaneContent::Setup(_) => Context::Setup,
+					PaneContent::Write(_) => Context::Write,
+					PaneContent::Help(_) => Context::Help,
+				});
+			}
+		}
+
+		// Aggregate keybinds from all active contexts
+		let mut combined_binds = BTreeMap::new();
+		for ctx in active_contexts {
+			if let Some(map) = self.config.keybinds.get(&ctx) {
+				combined_binds.extend(map.clone());
+			}
+		}
+
+		if combined_binds.is_empty() {
+			return Subscription::none();
+		}
+
 		keyboard::listen()
-			.with(keybinds)
-			.filter_map(|(keybinds, event)| {
+			.with(combined_binds)
+			.filter_map(|(binds, event)| {
 				let keybind = Keybind::from_event(event)?;
-				Some(keybinds.get(&keybind)?.clone())
+				binds.get(&keybind).cloned()
 			})
 			.filter_map(|command| {
 				#[allow(unused_imports)] // Will be expanded in the near future
@@ -105,7 +118,24 @@ impl Editor {
 						GlobalCmd::DebugPrint => Message::DebugPrint,
 					},
 					Command::View(command) => match command {
-						//ViewCmd:: => Message::,
+						ViewCmd::FocusLeft => {
+							Message::Panes(panes::Message::FocusAdjacent(Direction::Left))
+						}
+						ViewCmd::FocusRight => {
+							Message::Panes(panes::Message::FocusAdjacent(Direction::Right))
+						}
+						ViewCmd::FocusDown => {
+							Message::Panes(panes::Message::FocusAdjacent(Direction::Down))
+						}
+						ViewCmd::FocusUp => {
+							Message::Panes(panes::Message::FocusAdjacent(Direction::Up))
+						}
+						ViewCmd::SplitFocusedVertical => {
+							Message::Panes(panes::Message::SplitFocused(Axis::Vertical))
+						}
+						ViewCmd::SplitFocusedHorizontal => {
+							Message::Panes(panes::Message::SplitFocused(Axis::Horizontal))
+						}
 					},
 					Command::Blank(command) => match command {
 						//BlankCmd:: => Message::,

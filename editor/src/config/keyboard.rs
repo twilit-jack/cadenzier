@@ -9,26 +9,59 @@ pub type Keymap = BTreeMap<Context, BTreeMap<Keybind, Command>>;
 
 pub fn default_keymap() -> Keymap {
 	BTreeMap::from([
-		(Context::Render, BTreeMap::from([])),
+		(Context::Global, BTreeMap::from([])),
 		(
-			Context::Setup,
+			Context::View,
 			BTreeMap::from([
 				(
 					Keybind {
-						key: "a".into(),
+						key: "h".into(),
 						modifiers: Modifiers::none(),
 					},
-					Command::Global(GlobalCmd::DebugPrint),
+					Command::View(ViewCmd::FocusLeft),
 				),
 				(
 					Keybind {
-						key: "Tab".into(),
+						key: "j".into(),
 						modifiers: Modifiers::none(),
 					},
-					Command::Global(GlobalCmd::DebugPrint),
+					Command::View(ViewCmd::FocusDown),
+				),
+				(
+					Keybind {
+						key: "k".into(),
+						modifiers: Modifiers::none(),
+					},
+					Command::View(ViewCmd::FocusUp),
+				),
+				(
+					Keybind {
+						key: "l".into(),
+						modifiers: Modifiers::none(),
+					},
+					Command::View(ViewCmd::FocusRight),
+				),
+				(
+					Keybind {
+						key: "z".into(),
+						modifiers: Modifiers::none(),
+					},
+					Command::View(ViewCmd::SplitFocusedVertical),
+				),
+				(
+					Keybind {
+						key: "z".into(),
+						modifiers: Modifiers {
+							shift: true,
+							..Default::default()
+						},
+					},
+					Command::View(ViewCmd::SplitFocusedHorizontal),
 				),
 			]),
 		),
+		(Context::Render, BTreeMap::from([])),
+		(Context::Setup, BTreeMap::from([])),
 		(Context::Write, BTreeMap::from([])),
 		(Context::Help, BTreeMap::from([])),
 	])
@@ -91,7 +124,7 @@ impl From<kb::Key> for Key {
 			// a bit of string conversion if `iced::keyboard::key::Named` ever changes (though it might
 			// not change)
 			kb::Key::Named(name) => Self(format!("{name:?}")),
-			kb::Key::Character(char) => Self(char.into()),
+			kb::Key::Character(char) => Self(char.to_lowercase()),
 			kb::Key::Unidentified => Self("".into()),
 		}
 	}
@@ -164,7 +197,14 @@ pub enum GlobalCmd {
 	DebugPrint,
 }
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ViewCmd {}
+pub enum ViewCmd {
+	FocusLeft,
+	FocusRight,
+	FocusDown,
+	FocusUp,
+	SplitFocusedVertical,
+	SplitFocusedHorizontal,
+}
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum BlankCmd {}
 #[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
