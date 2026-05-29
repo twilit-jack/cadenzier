@@ -3,6 +3,8 @@
 
 mod config;
 mod gui;
+mod lilypond;
+mod sfizz;
 
 fn main() -> iced::Result {
 	// gui is separated here for adding a cli down the line.
