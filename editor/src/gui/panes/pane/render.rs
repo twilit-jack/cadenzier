@@ -23,7 +23,7 @@ impl Render {
 
 	pub fn view<'a>(
 		&'a self,
-		_config: &Config,
+		_config: &'a Config,
 		project: &'a cdnz::Project,
 	) -> Element<'a, Message> {
 		// Viewport: Scrollable view of LilyPond-generated score pages in a row.
