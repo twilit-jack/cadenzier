@@ -1,4 +1,4 @@
-# Cadenza Docs
+# Home
 
 Welcome to the Cadenza Docs!
 

@@ -8,10 +8,16 @@ repo_url = "https://codeberg.org/twilit-jack/cadenza"
 
 copyright = "Cadenza Docs © 2026 by Twilit Jack — licensed under CC BY-NC-SA 4.0"
 
-#nav = [
-#  { "Get started" = "index.md" },
-#  { "Markdown in 5min" = "markdown.md" },
-#]
+nav = [
+	{ "Home" = "index.md" },
+	{ "Get Started" = [
+		{ "Introduction" = "get_started.md" },
+		{ "Installation" = "get_started/install.md" },
+	] },
+	{ "Contributing" = [
+		{ "Overview" = "contributing.md" },
+	] },
+]
 
 
 [project.theme]
