@@ -5,7 +5,7 @@ use crate::config::Config;
 
 use iced::{
 	Element,
-	widget::{button, center, column, row, scrollable, svg},
+	widget::{button, center, column, row, rule::horizontal as h_rule, scrollable, svg, text},
 };
 use std::collections::HashMap;
 
@@ -40,7 +40,8 @@ impl Render {
 
 		// Side panel: List of buttons for switching between different layouts (i.e. instrument
 		// parts, conductor's score, etc.).
-		let mut list_items = Vec::<Element<Message>>::new();
+		let mut list_items =
+			Vec::<Element<Message>>::from([text("Layouts").into(), h_rule(2).into()]);
 		for (layout_name, _) in &project.layouts {
 			let item = button(layout_name.as_str());
 			list_items.push(item.into());
