@@ -8,7 +8,6 @@ use keyboard::*;
 use directories::ProjectDirs;
 use serde::{Deserialize, Serialize};
 use std::{
-	collections::BTreeMap,
 	fs::{File, create_dir_all},
 	io::{Error, ErrorKind, Read, Write},
 };
@@ -17,7 +16,7 @@ use std::{
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Config {
-	pub keybinds: BTreeMap<keyboard::Context, BTreeMap<Keybind, keyboard::Command>>,
+	pub keybinds: Keymap,
 }
 
 // ======== DEFAULT ========
@@ -25,30 +24,7 @@ pub struct Config {
 impl Default for Config {
 	fn default() -> Self {
 		Self {
-			keybinds: BTreeMap::from([
-				(keyboard::Context::Render, BTreeMap::from([])),
-				(
-					keyboard::Context::Setup,
-					BTreeMap::from([
-						(
-							Keybind {
-								key: "a".into(),
-								modifiers: Modifiers::none(),
-							},
-							keyboard::Command::Global(GlobalCmd::DebugPrint),
-						),
-						(
-							Keybind {
-								key: "Tab".into(),
-								modifiers: Modifiers::none(),
-							},
-							keyboard::Command::Global(GlobalCmd::DebugPrint),
-						),
-					]),
-				),
-				(keyboard::Context::Write, BTreeMap::from([])),
-				(keyboard::Context::Help, BTreeMap::from([])),
-			]),
+			keybinds: default_keymap(),
 		}
 	}
 }

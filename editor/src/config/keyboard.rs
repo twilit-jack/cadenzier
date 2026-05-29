@@ -1,10 +1,38 @@
 // SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
-use std::fmt::Display;
-
 use iced::keyboard::{self as kb, Event};
 use serde::{Deserialize, Serialize};
+use std::{collections::BTreeMap, fmt::Display};
+
+pub type Keymap = BTreeMap<Context, BTreeMap<Keybind, Command>>;
+
+pub fn default_keymap() -> Keymap {
+	BTreeMap::from([
+		(Context::Render, BTreeMap::from([])),
+		(
+			Context::Setup,
+			BTreeMap::from([
+				(
+					Keybind {
+						key: "a".into(),
+						modifiers: Modifiers::none(),
+					},
+					Command::Global(GlobalCmd::DebugPrint),
+				),
+				(
+					Keybind {
+						key: "Tab".into(),
+						modifiers: Modifiers::none(),
+					},
+					Command::Global(GlobalCmd::DebugPrint),
+				),
+			]),
+		),
+		(Context::Write, BTreeMap::from([])),
+		(Context::Help, BTreeMap::from([])),
+	])
+}
 
 /// Minimized mirror enum of `iced::keyboard::Event` that implements `Serialize` and `Deserialize`.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord, Hash)]
