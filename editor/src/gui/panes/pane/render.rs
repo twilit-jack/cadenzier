@@ -28,11 +28,11 @@ impl Render {
 	) -> Element<'a, Message> {
 		// Viewport: Scrollable view of LilyPond-generated score pages in a row.
 		let viewport = if let Some(selected_layout) = &self.selected_layout {
-			let handles = self
+			let svg_handles = self
 				.svgs
 				.get(selected_layout)
 				.expect("`selected_layout` should be an existing layout in the project");
-			let row = row(handles.iter().cloned().map(svg).map(Element::from));
+			let row = row(svg_handles.iter().cloned().map(svg).map(Element::from));
 			scrollable(row)
 		} else {
 			scrollable(center("No layout selected."))
