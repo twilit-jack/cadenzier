@@ -1,3 +1,6 @@
+<!-- SPDX-FileCopyrightText: 2026 Twilit Jack <twilit.jack@proton.me>
+     SPDX-License-Identifier: CC-BY-NC-SA-4.0 -->
+
 # Installation
 
 !!! warning
