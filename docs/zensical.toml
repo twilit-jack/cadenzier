@@ -24,7 +24,7 @@ nav = [
 
 
 [project.theme]
-favicon = "../assets/icon.png"
+favicon = "assets/icon.png"
 language = "en"
 
 features = [
