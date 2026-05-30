@@ -333,7 +333,7 @@ pub struct Pitch {
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub enum Instrument {
 	// Basic assortment of instruments. Will be expanded as time goes.
-	// You'll be able to suggest your own additions once issues get enabled.
+	// Feel free to suggest your own additions in issues!
 
 	// ==== Strings ====
 	Violin,
