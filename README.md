@@ -1,18 +1,27 @@
-# The Cadenza Project
+<div align="center">
 
-> ### Quick heads up:
->
-> This README covers the Cadenza project as a whole. For the Cadenza editor, see
-> [editor README][Editor README].
+<img src="assets/branding/icon.png" width="140px" />
 
-The Cadenza project is a project led by a solo dev (Twilit Jack) devoted to making music [free as in
-speech][Free Software] in the tech world. Currently, it has two main branches in development:
-1. The Cadenza editor ([README][Editor README])
-2. The CDNZ music format ([README][CDNZ README])
+# Cadenza
 
-**Please note that this project is in its early stages, and that there is very little to show yet.**
+The free and open-source music notation editor you've been waiting for.
 
+</div>
 
-[Editor README]: ./editor/README.md
-[CDNZ README]: ./cdnz/README.md
-[Free Software]: https://www.gnu.org/philosophy/free-sw.html
+## Planned features
+
+- Fully FOSS, forever.
+- All features fully accessible by or even designed for the keyboard.
+- Professional quality rendering/engraving via [LilyPond][LilyPond].
+- Gorgeous audio via [Sfizz][Sfizz] and the [VSCO 2: CE][VSCO 2: CE] SFZ library.
+- A modern interface and backend, powered by Rust and the [iced][iced] crate.
+- Priority given to the offline experience, and not the cloud.
+
+**Please note that this project is in its early stages, and that there is little to show yet.**
+
+You can [read the docs][Docs] for more info about the project.
+
+[LilyPond]: https://lilypond.org/
+[VSCO 2: CE]: https://
+[iced]: https://iced.rs/
+[Docs]: https://twilit-jack.codeberg.page/cadenza
