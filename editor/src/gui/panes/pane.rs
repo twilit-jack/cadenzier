@@ -47,7 +47,7 @@ pub enum Message {
 }
 
 impl Pane {
-	pub fn update(&mut self, message: Message) {
+	pub fn update(&mut self, message: Message, project: &mut cdnz::Project) {
 		match &mut self.content {
 			PaneContent::Blank(_) => match message {
 				Message::Blank(message) => match message {
@@ -56,19 +56,19 @@ impl Pane {
 				_ => (),
 			},
 			PaneContent::Render(render) => match message {
-				Message::Render(message) => render.update(message),
+				Message::Render(message) => render.update(message, project),
 				_ => (),
 			},
 			PaneContent::Setup(setup) => match message {
-				Message::Setup(message) => setup.update(message),
+				Message::Setup(message) => setup.update(message, project),
 				_ => (),
 			},
 			PaneContent::Write(write) => match message {
-				Message::Write(message) => write.update(message),
+				Message::Write(message) => write.update(message, project),
 				_ => (),
 			},
 			PaneContent::Help(help) => match message {
-				Message::Help(message) => help.update(message),
+				Message::Help(message) => help.update(message, project),
 				_ => (),
 			},
 		}

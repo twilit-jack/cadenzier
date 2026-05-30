@@ -60,7 +60,7 @@ impl Editor {
 				Task::none()
 			}
 			Message::Panes(message) => {
-				self.panes.update(message);
+				self.panes.update(message, &mut self.project);
 				Task::none()
 			}
 		}

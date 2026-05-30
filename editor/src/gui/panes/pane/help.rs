@@ -15,7 +15,7 @@ pub struct Help {}
 pub enum Message {}
 
 impl Help {
-	pub fn update(&mut self, _message: Message) {}
+	pub fn update(&mut self, _message: Message, project: &mut cdnz::Project) {}
 
 	pub fn view<'a>(
 		&'a self,

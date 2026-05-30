@@ -19,7 +19,7 @@ pub struct Render {
 pub enum Message {}
 
 impl Render {
-	pub fn update(&mut self, _message: Message) {}
+	pub fn update(&mut self, _message: Message, project: &mut cdnz::Project) {}
 
 	pub fn view<'a>(
 		&'a self,

@@ -27,7 +27,7 @@ pub enum Message {
 }
 
 impl Setup {
-	pub fn update(&mut self, message: Message) {
+	pub fn update(&mut self, message: Message, project: &mut cdnz::Project) {
 		match message {
 			Message::ModeToggled(mode) => self.mode = mode,
 		}

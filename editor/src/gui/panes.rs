@@ -54,11 +54,11 @@ pub enum Message {
 }
 
 impl Panes {
-	pub fn update(&mut self, message: Message) {
+	pub fn update(&mut self, message: Message, project: &mut cdnz::Project) {
 		match message {
 			Message::Pane(pane, message) => {
 				if let Some(pane) = self.panes.get_mut(pane) {
-					pane.update(message);
+					pane.update(message, project);
 				};
 			}
 

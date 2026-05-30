@@ -42,7 +42,7 @@ pub enum Message {
 }
 
 impl Write {
-	pub fn update(&mut self, message: Message) {
+	pub fn update(&mut self, message: Message, project: &mut cdnz::Project) {
 		match message {
 			Message::SetMode(mode) => self.mode = mode,
 			Message::TogglePartVisibility(name, is_visible) => {
