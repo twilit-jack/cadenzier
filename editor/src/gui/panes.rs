@@ -13,7 +13,7 @@ use crate::{
 };
 
 use iced::{
-	Element, Fill,
+	Element, Fill, Padding,
 	widget::{
 		button, container,
 		pane_grid::{self, PaneGrid},
@@ -127,14 +127,18 @@ impl Panes {
 					view_controls(id, total_panes, is_maximized),
 					button(icon(Icon::Close).size(14))
 						.style(button::danger)
-						.padding(3)
 						.on_press_maybe(if total_panes > 1 {
 							Some(Message::Close(id))
 						} else {
 							None
 						}),
 				))
-				.padding(10)
+				.padding(Padding {
+					top: 2.0,
+					right: 8.0,
+					bottom: 2.0,
+					left: 8.0,
+				})
 				.style(if is_focused {
 					style::title_bar_focused
 				} else {
