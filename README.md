@@ -22,6 +22,7 @@ The free and open-source music notation editor you've been waiting for.
 You can [read the docs][Docs] for more info about the project.
 
 [LilyPond]: https://lilypond.org/
-[VSCO 2: CE]: https://
+[Sfizz]: https://github.com/sfztools/sfizz/
+[VSCO 2: CE]: https://versilian-studios.com/vsco-community/
 [iced]: https://iced.rs/
-[Docs]: https://twilit-jack.codeberg.page/cadenza
+[Docs]: https://twilit-jack.codeberg.page/cadenza/
