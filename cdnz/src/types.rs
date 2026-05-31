@@ -341,7 +341,7 @@ pub type Offset = Vec<Skip>;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Pitch {
-	/// A whole step, beginning at middle C.
+	/// A step of the C major scale, beginning at middle C.
 	///
 	/// Examples:
 	/// - C4 (middle C): 0
@@ -350,14 +350,8 @@ pub struct Pitch {
 	/// - C3: -7
 	pub step: i32,
 
-	/// Alteration of the note, with 1/1 being a whole tone.
-	///
-	/// Examples:
-	/// - Natural: (0, 1)
-	/// - Sharp: (1, 2)
-	/// - Flat: (-1, 2)
-	/// - Double sharp: (1, 1)
-	pub alteration: Fraction,
+	/// Alteration of the note.
+	pub alteration: Alteration,
 }
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
