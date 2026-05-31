@@ -354,6 +354,20 @@ pub struct Pitch {
 	pub alteration: Alteration,
 }
 
+#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
+pub enum Alteration {
+	FlatFlat,
+	FlatAndHalf,
+	Flat,
+	HalfFlat,
+	#[default]
+	Natural,
+	HalfSharp,
+	Sharp,
+	SharpAndHalf,
+	SharpSharp,
+}
+
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub enum Instrument {
 	// Basic assortment of instruments. Will be expanded as time goes.
