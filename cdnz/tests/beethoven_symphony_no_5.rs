@@ -37,12 +37,13 @@ fn create_beethoven_project() -> Project {
 
 		global: GlobalData {
 			mod_events: [(
-				vec![],
+				[].into(),
 				[
 					GlobalModEvent::KeyChange {
 						note: Pitch {
-							step: 0,
-							alteration: Fraction::default(),
+							step: PitchStep::C,
+							octave: 0,
+							alteration: Alteration::Natural,
 						},
 						mode: KeyMode::Minor,
 					},
@@ -60,37 +61,83 @@ fn create_beethoven_project() -> Project {
 					instrument: Instrument::Piano,
 					rhythmic_events: [
 						RhythmicEvent::Rest {
-							duration: Duration { base: 2, dots: 0 },
+							duration: Duration { base: 3, dots: 0 },
 						},
 						RhythmicEvent::Note {
-							duration: Duration { base: 2, dots: 0 },
+							duration: Duration { base: 3, dots: 0 },
 							pitches: [Pitch {
-								step: 4,
-								alteration: Fraction::default(),
+								step: PitchStep::G,
+								octave: 1,
+								alteration: Alteration::Natural,
 							}]
 							.into(),
 						},
 						RhythmicEvent::Note {
 							duration: Duration { base: 2, dots: 0 },
 							pitches: [Pitch {
-								step: 4,
-								alteration: Fraction::default(),
+								step: PitchStep::G,
+								octave: 1,
+								alteration: Alteration::Natural,
 							}]
 							.into(),
 						},
 						RhythmicEvent::Note {
 							duration: Duration { base: 2, dots: 0 },
 							pitches: [Pitch {
-								step: 4,
-								alteration: Fraction::default(),
+								step: PitchStep::G,
+								octave: 1,
+								alteration: Alteration::Natural,
 							}]
 							.into(),
 						},
+						// ---
 						RhythmicEvent::Note {
 							duration: Duration { base: 0, dots: 0 },
 							pitches: [Pitch {
-								step: 2,
-								alteration: Fraction::new(-1, 2),
+								step: PitchStep::E,
+								octave: 1,
+								alteration: Alteration::Flat,
+							}]
+							.into(),
+						},
+						// ---
+						RhythmicEvent::Rest {
+							duration: Duration { base: 3, dots: 0 },
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 3, dots: 0 },
+							pitches: [Pitch {
+								step: PitchStep::F,
+								octave: 1,
+								alteration: Alteration::Natural,
+							}]
+							.into(),
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 2, dots: 0 },
+							pitches: [Pitch {
+								step: PitchStep::F,
+								octave: 1,
+								alteration: Alteration::Natural,
+							}]
+							.into(),
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 2, dots: 0 },
+							pitches: [Pitch {
+								step: PitchStep::F,
+								octave: 1,
+								alteration: Alteration::Natural,
+							}]
+							.into(),
+						},
+						// ---
+						RhythmicEvent::Note {
+							duration: Duration { base: 0, dots: 0 },
+							pitches: [Pitch {
+								step: PitchStep::D,
+								octave: 1,
+								alteration: Alteration::Natural,
 							}]
 							.into(),
 						},

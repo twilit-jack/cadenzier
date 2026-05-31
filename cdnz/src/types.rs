@@ -341,30 +341,30 @@ pub type Offset = Vec<Skip>;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Pitch {
-	/// A step of the C major scale, beginning at middle C.
-	///
-	/// Examples:
-	/// - C4 (middle C): 0
-	/// - A4 (concert pitch): 5
-	/// - C5: 7
-	/// - C3: -7
-	pub step: i32,
-
-	/// Alteration of the note.
+	pub step: PitchStep,
+	/// Octave, with 0 being the octave below middle C, as in LilyPond.
+	pub octave: u8,
 	pub alteration: Alteration,
 }
 
+#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[rustfmt::skip]
+pub enum PitchStep { C, D, E, F, G, A, B, }
+
+/// Alteration of a pitch.
+///
+/// HF stands for half flat, HS stands for half sharp.
 #[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
 pub enum Alteration {
 	FlatFlat,
-	FlatAndHalf,
+	FlatHF,
 	Flat,
-	HalfFlat,
+	HF,
 	#[default]
 	Natural,
-	HalfSharp,
+	HS,
 	Sharp,
-	SharpAndHalf,
+	SharpHS,
 	SharpSharp,
 }
 
