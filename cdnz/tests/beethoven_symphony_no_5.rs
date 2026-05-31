@@ -3,7 +3,7 @@
 
 use cdnz::*;
 use num::Rational32 as Fraction;
-use std::{collections::BTreeMap, fs, path::PathBuf};
+use std::{fs, path::PathBuf};
 
 fn create_beethoven_project() -> Project {
 	Project {
@@ -37,11 +37,7 @@ fn create_beethoven_project() -> Project {
 
 		global: GlobalData {
 			mod_events: [(
-				Position {
-					measure: 0,
-					pos: Fraction::default(),
-					grace_index: 0,
-				},
+				vec![],
 				[
 					GlobalModEvent::KeyChange {
 						note: Pitch {
@@ -60,73 +56,49 @@ fn create_beethoven_project() -> Project {
 		parts: [(
 			"Piano".into(),
 			Part {
-				voices: vec![Voice {
+				voices: [Voice {
 					instrument: Instrument::Piano,
-					rhythmic_events: BTreeMap::from([
-						(
-							Position {
-								measure: 0,
-								pos: Fraction::default(),
-								grace_index: 0,
-							},
-							RhythmicEvent::Rest {},
-						),
-						(
-							Position {
-								measure: 0,
-								pos: Fraction::new(1, 4),
-								grace_index: 0,
-							},
-							RhythmicEvent::Note {
-								pitches: vec![Pitch {
-									step: 4,
-									alteration: Fraction::default(),
-								}],
-							},
-						),
-						(
-							Position {
-								measure: 0,
-								pos: Fraction::new(2, 4),
-								grace_index: 0,
-							},
-							RhythmicEvent::Note {
-								pitches: vec![Pitch {
-									step: 4,
-									alteration: Fraction::default(),
-								}],
-							},
-						),
-						(
-							Position {
-								measure: 0,
-								pos: Fraction::new(3, 4),
-								grace_index: 0,
-							},
-							RhythmicEvent::Note {
-								pitches: vec![Pitch {
-									step: 4,
-									alteration: Fraction::default(),
-								}],
-							},
-						),
-						(
-							Position {
-								measure: 1,
-								pos: Fraction::default(),
-								grace_index: 0,
-							},
-							RhythmicEvent::Note {
-								pitches: [Pitch {
-									step: 2,
-									alteration: Fraction::new(-1, 2),
-								}]
-								.into(),
-							},
-						),
-					]),
+					rhythmic_events: [
+						RhythmicEvent::Rest {
+							duration: Duration { base: 2, dots: 0 },
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 2, dots: 0 },
+							pitches: [Pitch {
+								step: 4,
+								alteration: Fraction::default(),
+							}]
+							.into(),
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 2, dots: 0 },
+							pitches: [Pitch {
+								step: 4,
+								alteration: Fraction::default(),
+							}]
+							.into(),
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 2, dots: 0 },
+							pitches: [Pitch {
+								step: 4,
+								alteration: Fraction::default(),
+							}]
+							.into(),
+						},
+						RhythmicEvent::Note {
+							duration: Duration { base: 0, dots: 0 },
+							pitches: [Pitch {
+								step: 2,
+								alteration: Fraction::new(-1, 2),
+							}]
+							.into(),
+						},
+					]
+					.into(),
 					mod_events: [].into(),
-				}],
+				}]
+				.into(),
 			},
 		)]
 		.into(),

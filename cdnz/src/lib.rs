@@ -94,7 +94,7 @@ pub struct PersonInfo {
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct GlobalData {
-	pub mod_events: BTreeMap<Position, Vec<GlobalModEvent>>,
+	pub mod_events: BTreeMap<Offset, Vec<GlobalModEvent>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -166,15 +166,22 @@ pub struct Part {
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
 pub struct Voice {
 	pub instrument: Instrument,
-	pub rhythmic_events: BTreeMap<Position, RhythmicEvent>,
-	pub mod_events: BTreeMap<Position, Vec<LocalModEvent>>,
+	pub rhythmic_events: Vec<RhythmicEvent>,
+	pub mod_events: BTreeMap<Offset, Vec<LocalModEvent>>,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum RhythmicEvent {
-	Note { pitches: Vec<Pitch> },
-	DrumNote {},
-	Rest {},
+	Note {
+		duration: Duration,
+		pitches: Vec<Pitch>,
+	},
+	DrumNote {
+		duration: Duration,
+	},
+	Rest {
+		duration: Duration,
+	},
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -293,21 +300,51 @@ impl LayoutModEvent {
 // =========================== PRIMITIVES ===========================
 
 #[derive(Debug, Serialize, Deserialize, Default, PartialEq, Eq, PartialOrd, Ord)]
-pub struct Position {
-	/// The measure index this position is in/is relative to.
-	pub measure: u32,
-
-	/// The position in the measure as a rational.
+pub struct Duration {
+	/// Note type by duration (e.g. quarter note, eighth note, etc.).
 	///
-	/// (0, 1) would be the start of the measure, (1, 2) – halfway through.
-	pub pos: Fraction,
-
-	/// Index used for ordering in grace notes.
+	/// Values correspond to a progression like this:
+	/// - 0 – Whole note (semibreve)
+	/// - 1 – Half note (minim)
+	/// - 2 – Quarter note (crotchet)
+	/// - 3 – Eighth note (quaver)
+	/// - 4 – Sixteenth note (semiquaver)
 	///
-	/// For regular notes, this is `0`. For a grace note before a regular note, it would be `1`.
-	/// For a grace note before that grace note, this would be `2`, and so on.
-	pub grace_index: u32,
+	/// Or in the opposite direction:
+	/// - 0 – Whole note (semibreve)
+	/// - -1 – Breve
+	/// - -2 – Longa
+	/// - -3 – Maxima
+	///
+	/// Or through these formulas:
+	/// - `length = 2^-value`
+	/// - `value = -log_2 length`
+	pub base: i32,
+
+	/// Represents the number of dots in this duration.
+	///
+	/// E.g.:
+	/// - 0 – No dots
+	/// - 1 – Dotted
+	/// - 2 – Double-dotted
+	pub dots: u32,
 }
+
+/// Semantic alias for `Duration`, corresponding to a LilyPond skip/spacer rest.
+pub type Skip = Duration;
+
+/// Implies "How many skips does it take to reach this, starting from the very start?"
+///
+/// This is used to simplify conversion to LilyPond.
+///
+/// As an example, a clef event near the middle of measure 7 would transpile to something like:
+///
+/// ``` lilypond
+/// {
+/// 	s1*6 s2 s16 \clef "treble"
+/// }
+/// ```
+pub type Offset = Vec<Skip>;
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub struct Pitch {
