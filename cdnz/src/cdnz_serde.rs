@@ -21,6 +21,7 @@
 use super::*;
 use crate::upgrade::CdnzUpgradeError;
 
+use serde::{Deserialize, Serialize};
 use std::io::{self, Read};
 
 const CURRENT_VERSION: &'static str = env!("CARGO_PKG_VERSION");
