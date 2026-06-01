@@ -9,7 +9,7 @@ use std::collections::BTreeMap;
 // =========================== ROOT ===========================
 
 /// The root object of a CDNZ file.
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Project {
 	pub cdnz: Metadata,
 	pub global: GlobalData,
@@ -18,7 +18,7 @@ pub struct Project {
 }
 
 /// Metadata about the CDNZ file in question.
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct Metadata {
 	/// The name/title for the music.
 	///
@@ -62,7 +62,7 @@ pub struct Metadata {
 	pub engraving_license: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 #[skip_serializing_none]
 pub struct PersonInfo {
 	/// The name of this person or entity.
@@ -85,12 +85,12 @@ pub struct PersonInfo {
 
 // =========================== GLOBAL DATA ===========================
 
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub struct GlobalData {
 	pub mod_events: BTreeMap<Offset, Vec<GlobalModEvent>>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum GlobalModEvent {
 	KeyChange {
 		/// The note this key change references.
@@ -126,7 +126,7 @@ pub enum GlobalModEvent {
 	},
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum KeyMode {
 	Major,
 	Minor,
@@ -142,7 +142,7 @@ pub enum KeyMode {
 	Locrian,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct Bpm {
 	pub unit: Fraction,
 }
@@ -151,19 +151,19 @@ pub struct Bpm {
 
 pub type PartName = String;
 
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub struct Part {
 	pub voices: Vec<Voice>,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub struct Voice {
 	pub instrument: Instrument,
 	pub rhythmic_events: Vec<RhythmicEvent>,
 	pub mod_events: BTreeMap<Offset, Vec<LocalModEvent>>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum RhythmicEvent {
 	Note {
 		duration: Duration,
@@ -177,31 +177,28 @@ pub enum RhythmicEvent {
 	},
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum LocalModEvent {}
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
-pub enum ClefSign {
-	G,
-	F,
-	C,
-}
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[rustfmt::skip]
+pub enum ClefSign { G, F, C }
 
 // =========================== LAYOUT ===========================
 
 pub type LayoutName = String;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub struct Layout {
 	pub header: Header,
 	pub paper: PaperSettings,
 	pub layout: LayoutElement,
 }
 
-#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub struct Header {}
 
-#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 #[skip_serializing_none]
 pub struct PaperSettings {
 	pub paper_height: Option<f64>,
@@ -227,19 +224,25 @@ pub struct PaperSettings {
 	pub ragged_last_bottom: Option<bool>,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum LayoutElement {
 	Staff { voices: Vec<LayoutVoice> },
 	StaffGroup { children: Vec<LayoutElement> },
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+impl Default for LayoutElement {
+	fn default() -> Self {
+		Self::Staff { voices: [].into() }
+	}
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub struct LayoutVoice {
 	pub mod_events: Vec<LayoutModEvent>,
 	pub referenced_voice: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
 pub enum LayoutModEvent {
 	ClefChange {
 		sign: ClefSign,
@@ -292,7 +295,7 @@ impl LayoutModEvent {
 
 // =========================== PRIMITIVES ===========================
 
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Duration {
 	/// Note type by duration (e.g. quarter note, eighth note, etc.).
 	///
@@ -339,7 +342,7 @@ pub type Skip = Duration;
 /// ```
 pub type Offset = Vec<Skip>;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub struct Pitch {
 	pub step: PitchStep,
 	/// Octave, with 0 being the octave below middle C, as in LilyPond.
@@ -347,14 +350,14 @@ pub struct Pitch {
 	pub alteration: Alteration,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 #[rustfmt::skip]
-pub enum PitchStep { C, D, E, F, G, A, B, }
+pub enum PitchStep { #[default] C, D, E, F, G, A, B, }
 
 /// Alteration of a pitch.
 ///
 /// HF stands for half flat, HS stands for half sharp.
-#[derive(Debug, Default, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Clone, Default, Serialize, Deserialize, PartialEq)]
 pub enum Alteration {
 	FlatFlat,
 	FlatHF,
@@ -368,7 +371,7 @@ pub enum Alteration {
 	SharpSharp,
 }
 
-#[derive(Debug, Serialize, Deserialize, Default, PartialEq)]
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq)]
 pub enum Instrument {
 	// Basic assortment of instruments. Will be expanded as time goes.
 	// Feel free to suggest your own additions in issues!
