@@ -3,7 +3,7 @@
 
 pub mod pane;
 
-use self::pane::Pane;
+use self::pane::{Pane, PaneContent};
 use crate::{
 	config::Config,
 	gui::style::{
@@ -17,7 +17,7 @@ use iced::{
 	widget::{
 		button, container,
 		pane_grid::{self, PaneGrid},
-		responsive, row,
+		responsive, row, text,
 	},
 };
 
@@ -120,7 +120,14 @@ impl Panes {
 		let pane_grid = PaneGrid::new(&self.panes, |id, pane, is_maximized| {
 			let is_focused = self.focus == Some(id);
 
-			let title = row![].spacing(5);
+			let title = row![text(match pane.content {
+				PaneContent::Blank(_) => "New Pane",
+				PaneContent::Render(_) => "Render",
+				PaneContent::Setup(_) => "Setup",
+				PaneContent::Write(_) => "Write",
+				PaneContent::Help(_) => "Help",
+			})]
+			.spacing(5);
 
 			let title_bar = pane_grid::TitleBar::new(title)
 				.controls(pane_grid::Controls::dynamic(
