@@ -19,7 +19,7 @@ pub enum Icon {
 impl Icon {
 	fn get_unicode(&self) -> &'static str {
 		match self {
-			Icon::Close => "\u{58}",
+			Icon::Close => "\u{f00d}",
 			Icon::Maximize => "\u{f065}",
 			Icon::Compress => "\u{f066}",
 		}
