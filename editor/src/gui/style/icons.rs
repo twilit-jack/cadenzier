@@ -14,6 +14,7 @@ pub enum Icon {
 	Close,
 	Maximize,
 	Compress,
+	Plus,
 }
 
 impl Icon {
@@ -22,6 +23,7 @@ impl Icon {
 			Icon::Close => "\u{f00d}",
 			Icon::Maximize => "\u{f065}",
 			Icon::Compress => "\u{f066}",
+			Icon::Plus => "\u{f067}",
 		}
 	}
 }
@@ -49,7 +51,7 @@ where
 	Renderer: iced_core::text::Renderer,
 	<Renderer as iced_core::text::Renderer>::Font: From<Font>,
 {
-	text(icon.get_unicode()).font(FONT_REGULAR).size(20).into()
+	text(icon.get_unicode()).font(FONT_SOLID).size(20).into()
 }
 
 #[allow(dead_code)] // I might need this in the future
