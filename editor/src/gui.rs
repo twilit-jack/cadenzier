@@ -26,7 +26,7 @@ struct Editor {
 }
 
 #[derive(Debug, Clone)]
-pub enum Message {
+enum Message {
 	/// Prints debug text to show that the message was recieved.
 	DebugPrint,
 
