@@ -4,7 +4,7 @@
 pub mod icons;
 
 use iced::widget::container;
-use iced::{Border, Font, Theme};
+use iced::{Border, Theme};
 
 pub fn title_bar_active(theme: &Theme) -> container::Style {
 	let palette = theme.extended_palette();
