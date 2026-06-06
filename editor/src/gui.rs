@@ -2,13 +2,19 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 mod keyboard;
-mod panes;
 mod style;
+mod tab;
 
-use self::panes::Panes;
-use crate::config::Config;
+use self::tab::Tab;
+use crate::{
+	config::Config,
+	gui::style::icons::{Icon, icon},
+};
 
-use iced::{Element, Settings, Subscription, Task};
+use iced::{
+	Element, Settings, Subscription, Task,
+	widget::{Row, button, center, column, text},
+};
 use std::borrow::Cow;
 
 pub(super) fn run() -> iced::Result {
@@ -19,7 +25,8 @@ pub(super) fn run() -> iced::Result {
 }
 
 struct Editor {
-	panes: Panes,
+	tabs: Vec<Tab>,
+	selected_tab: usize,
 
 	config: Config,
 	project: cdnz::Project,
@@ -30,13 +37,17 @@ enum Message {
 	/// Prints debug text to show that the message was recieved.
 	DebugPrint,
 
-	Panes(panes::Message),
+	NewTab,
+	DeleteTab(usize),
+	SwitchToTab(usize),
+	Tab(tab::Message),
 }
 
 impl Default for Editor {
 	fn default() -> Self {
 		Self {
-			panes: Panes::default(),
+			tabs: vec![Tab::default()],
+			selected_tab: 0,
 
 			config: Config::load_from_disk().unwrap_or_default(),
 			project: cdnz::Project::default(),
@@ -51,17 +62,61 @@ impl Editor {
 				eprintln!("Debug print message recieved!");
 				Task::none()
 			}
-			Message::Panes(message) => {
-				self.panes.update(message, &mut self.project);
+			Message::NewTab => {
+				self.tabs.push(Tab::default());
+				self.selected_tab = self.tabs.len() - 1;
+				Task::none()
+			}
+			Message::DeleteTab(tab_idx) => {
+				self.tabs.remove(tab_idx);
+				if self.selected_tab >= tab_idx {
+					if self.tabs.len() != 0 {
+						self.selected_tab -= 1;
+					} else {
+						self.tabs.push(Tab::default());
+						self.selected_tab = 0;
+					}
+				}
+				Task::none()
+			}
+			Message::SwitchToTab(tab_idx) => {
+				self.selected_tab = tab_idx;
+				Task::none()
+			}
+			Message::Tab(message) => {
+				self.tabs
+					.get_mut(self.selected_tab)
+					.expect("selected tab should exist")
+					.update(message, &mut self.project);
 				Task::none()
 			}
 		}
 	}
 
 	fn view(&self) -> Element<'_, Message> {
-		self.panes
-			.view(&self.config, &self.project)
-			.map(Message::Panes)
+		let tab_bar = {
+			let mut row = Row::with_capacity(self.tabs.len());
+			for (i, tab) in self.tabs.iter().enumerate() {
+				if self.selected_tab != i {
+					row = row.push(button(tab.label.as_str()).on_press(Message::SwitchToTab(i)));
+				} else {
+					row = row.push(button(tab.label.as_str()));
+				}
+			}
+			row.push(button(icon(Icon::Plus)).on_press(Message::NewTab))
+		};
+
+		let content: Element<Message> = {
+			if let Some(tab) = self.tabs.get(self.selected_tab) {
+				tab.view(&self.config, &self.project)
+					.map(Message::Tab)
+					.into()
+			} else {
+				center(text("No tab selected. This might be a bug.")).into()
+			}
+		};
+
+		column![tab_bar, content].into()
 	}
 
 	fn subscription(&self) -> Subscription<Message> {

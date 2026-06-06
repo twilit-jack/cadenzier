@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use super::PaneContent;
-use crate::gui::panes::pane::{help::Help, render::Render, setup::Setup, write::Write};
+use crate::gui::tab::pane::{help::Help, render::Render, setup::Setup, write::Write};
 
 use iced::{
 	Element, Length,

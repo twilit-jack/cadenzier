@@ -3,10 +3,10 @@
 
 use std::collections::BTreeMap;
 
-use super::{Editor, Message, panes};
+use super::{Editor, Message, tab};
 use crate::{
 	config::keyboard::{Command, Context, Keybind},
-	gui::panes::pane::PaneContent,
+	gui::tab::pane::PaneContent,
 };
 
 use iced::{
@@ -16,13 +16,17 @@ use iced::{
 
 impl Editor {
 	pub fn keyboard(&self) -> Subscription<Message> {
-		let focused_pane_id = self.panes.focus;
+		let tab = self
+			.tabs
+			.get(self.selected_tab)
+			.expect("selected tab should exist");
+		let focused_pane_id = tab.focus;
 
 		// Identify active contexts
 		let mut active_contexts = vec![Context::Global, Context::View];
 
 		if let Some(id) = focused_pane_id {
-			if let Some(pane) = self.panes.panes.get(id) {
+			if let Some(pane) = tab.panes.get(id) {
 				active_contexts.push(match pane.content {
 					PaneContent::Blank(_) => Context::Blank,
 					PaneContent::Render(_) => Context::Render,
@@ -62,22 +66,22 @@ impl Editor {
 					},
 					Command::View(command) => match command {
 						ViewCmd::FocusLeft => {
-							Message::Panes(panes::Message::FocusAdjacent(Direction::Left))
+							Message::Tab(tab::Message::FocusAdjacent(Direction::Left))
 						}
 						ViewCmd::FocusRight => {
-							Message::Panes(panes::Message::FocusAdjacent(Direction::Right))
+							Message::Tab(tab::Message::FocusAdjacent(Direction::Right))
 						}
 						ViewCmd::FocusDown => {
-							Message::Panes(panes::Message::FocusAdjacent(Direction::Down))
+							Message::Tab(tab::Message::FocusAdjacent(Direction::Down))
 						}
 						ViewCmd::FocusUp => {
-							Message::Panes(panes::Message::FocusAdjacent(Direction::Up))
+							Message::Tab(tab::Message::FocusAdjacent(Direction::Up))
 						}
 						ViewCmd::SplitFocusedVertical => {
-							Message::Panes(panes::Message::SplitFocused(Axis::Vertical))
+							Message::Tab(tab::Message::SplitFocused(Axis::Vertical))
 						}
 						ViewCmd::SplitFocusedHorizontal => {
-							Message::Panes(panes::Message::SplitFocused(Axis::Horizontal))
+							Message::Tab(tab::Message::SplitFocused(Axis::Horizontal))
 						}
 					},
 					Command::Blank(command) => match command {

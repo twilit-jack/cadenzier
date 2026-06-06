@@ -21,16 +21,19 @@ use iced::{
 	},
 };
 
-pub struct Panes {
+pub struct Tab {
+	pub label: String,
+
 	pub panes: pane_grid::State<Pane>,
 	pub focus: Option<pane_grid::Pane>,
 }
 
-impl Default for Panes {
+impl Default for Tab {
 	fn default() -> Self {
 		let (panes, pane) = pane_grid::State::new(Pane::default());
 
-		Panes {
+		Tab {
+			label: "New tab".into(),
 			panes,
 			focus: Some(pane),
 		}
@@ -53,7 +56,7 @@ pub enum Message {
 	CloseFocused,
 }
 
-impl Panes {
+impl Tab {
 	pub fn update(&mut self, message: Message, project: &mut cdnz::Project) {
 		match message {
 			Message::Pane(pane, message) => {

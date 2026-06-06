@@ -2,8 +2,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
 use iced::{
-	Element, Length,
-	widget::{button, checkbox, column, row, rule, scrollable, text},
+	Color, Element, Length, Point, Rectangle, Renderer, Theme, mouse,
+	widget::{
+		Column, button, canvas,
+		canvas::{Stroke, stroke},
+		checkbox, column, row, rule, scrollable, text,
+	},
 };
 use std::collections::HashSet;
 
@@ -75,11 +79,15 @@ impl Write {
 			]);
 		}
 
-		let viewport = scrollable(
-			text("Viewport placeholder")
+		let viewport = {
+			let mut staves = Vec::with_capacity(project.parts.len());
+			for (_, part) in &project.parts {
+				staves.push(canvas(Staff { part }).into());
+			}
+			scrollable(Column::from_vec(staves))
 				.width(Length::Fill)
-				.height(Length::Fill),
-		);
+				.height(Length::Fill)
+		};
 
 		let mode_indicator = text(match self.mode {
 			Mode::Normal | Mode::Space | Mode::View => "NORMAL",
@@ -90,5 +98,41 @@ impl Write {
 		let status_bar = row![mode_indicator];
 
 		column![row![viewport, side_panel], status_bar].into()
+	}
+}
+
+#[derive(Debug)]
+struct Staff<'a> {
+	part: &'a cdnz::Part,
+}
+
+impl<Message> canvas::Program<Message> for Staff<'_> {
+	type State = ();
+
+	fn draw(
+		&self,
+		_state: &(),
+		renderer: &Renderer,
+		_theme: &Theme,
+		bounds: Rectangle,
+		_cursor: mouse::Cursor,
+	) -> Vec<canvas::Geometry> {
+		let mut frame = canvas::Frame::new(renderer, bounds.size());
+
+		for i in 0..5 {
+			if i == 2 {
+				continue;
+			};
+			frame.stroke(
+				&canvas::Path::line(Point::new(8.0, 16.0), Point::new(bounds.x - 8.0, 16.0)),
+				Stroke {
+					style: stroke::Style::Solid(Color::BLACK),
+					width: 1.0,
+					..Stroke::default()
+				},
+			);
+		}
+
+		vec![frame.into_geometry()]
 	}
 }
