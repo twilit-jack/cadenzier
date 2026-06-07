@@ -4,25 +4,25 @@
 # Internal guide
 
 This page describes the official repo's directory structure, crates, and their modules. It is mainly
-targeted towards Rust developers who want to contribute to the development of Cadenza.
+targeted towards Rust developers who want to contribute to the development of Cadenzier.
 
 There are 4 important folders at the repo root:
 - `assets/` – Various assets used throughout the project.
 - `cdnz` – CDNZ library crate.
 - `docs/` – Zensical docmentation source.
-- `editor/` – Cadenza editor binary crate.
+- `editor/` – Cadenzier editor binary crate.
 
 There's also the `README.md` of the project, and a `Cargo.toml` and `Cargo.lock` for a Cargo
-workspace including the `cdnz` and `cadenza` (editor) crates.
+workspace including the `cdnz` and `cadenzier` (editor) crates.
 
 The following sections entail detailed information about each directory. Feel free to skip around as
 needed.
 
 ## `editor/`
 
-Contains the `cadenza` binary crate. Typical binary crate arrangement, except for the `fonts/`
+Contains the `cadenzier` binary crate. Typical binary crate arrangement, except for the `fonts/`
 folder, whose files get included in the binary, in the iced system. The fonts are FontAwesome icon
-packs, which get used in Cadenza's UI.
+packs, which get used in Cadenzier's UI.
 
 A library crate for the LilyPond and Sfizz APIs might be available in the future.
 
@@ -33,7 +33,7 @@ Licensed under AGPL-3.0-or-later.
 The GUI is made with the [iced](https://iced.rs) crate, using [the Elm architecture
 ](https://book.iced.rs/architecture.html). If you don't know what either of those things are, read
 [the iced book](https://book.iced.rs). It's also very useful if you have some experience with iced,
-as Cadenza leverages some more advanced iced features, such as pane grids.
+as Cadenzier leverages some more advanced iced features, such as pane grids.
 
 !!! warning
 
@@ -65,9 +65,9 @@ Licensed under CC-BY-NC-SA-4.0.
 
 ## `assets/`
 
-Currently only contains the `branding/` folder, which has a few icon and banner designs for Cadenza.
+Currently only contains the `branding/` folder, which has a few icon and banner designs for Cadenzier.
 
-In the future, this might contain LFS-managed, downloadable dependencies or packages for Cadenza, or
+In the future, this might contain LFS-managed, downloadable dependencies or packages for Cadenzier, or
 some other files.
 
 Licensed under CC-BY-NC-SA-4.0.

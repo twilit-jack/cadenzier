@@ -2,14 +2,14 @@
 # SPDX-License-Identifier: CC-BY-NC-SA-4.0
 
 [project]
-site_name = "Cadenza Docs"
-site_description = "Documentation for Cadenza, the FOSS music notation editor"
+site_name = "Cadenzier Docs"
+site_description = "Documentation for Cadenzier, the FOSS music notation editor"
 site_author = "Twilit Jack"
 
-site_url = "https://twilit-jack.codeberg.page/cadenza"
-repo_url = "https://codeberg.org/twilit-jack/cadenza"
+site_url = "https://twilit-jack.codeberg.page/cadenzier"
+repo_url = "https://codeberg.org/twilit-jack/cadenzier"
 
-copyright = "Cadenza Docs © 2026 by Twilit Jack — licensed under CC BY-NC-SA 4.0"
+copyright = "Cadenzier Docs © 2026 by Twilit Jack — licensed under CC BY-NC-SA 4.0"
 
 nav = [
 	{ "Home" = "index.md" },

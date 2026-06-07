@@ -81,7 +81,7 @@ impl Config {
 	pub fn save_to_disk(&self) -> Result<(), Error> {
 		let bytes = self.to_bytes()?;
 
-		let proj_dirs = ProjectDirs::from("org", "twilit-jack", "Cadenza")
+		let proj_dirs = ProjectDirs::from("org", "twilit-jack", "Cadenzier")
 			.ok_or(Error::new(ErrorKind::NotFound, "Home directory not found"))?;
 		let dir = proj_dirs.config_dir();
 		create_dir_all(&dir)?;
@@ -94,7 +94,7 @@ impl Config {
 	}
 
 	pub fn load_from_disk() -> Result<Self, Error> {
-		let proj_dirs = ProjectDirs::from("org", "twilit-jack", "Cadenza")
+		let proj_dirs = ProjectDirs::from("org", "twilit-jack", "Cadenzier")
 			.ok_or(Error::new(ErrorKind::NotFound, "Home directory not found"))?;
 		let dir = proj_dirs.config_dir();
 		create_dir_all(&dir)?;

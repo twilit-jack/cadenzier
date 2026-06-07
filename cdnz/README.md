@@ -4,7 +4,7 @@
 # CDNZ
 
 CDNZ is a work-in-progress open data format for storing music, primarily intended for use by
-[Cadenza][Cadenza], but you're free to use it for your own needs. This crate is the main
+[Cadenzier][Cadenzier], but you're free to use it for your own needs. This crate is the main
 implementation of CDNZ, and the specification is actively changing along with it. Once development
 largely settles, and the main ideas and opinions of the format are set, a formal specification will
 be published.
@@ -22,6 +22,6 @@ It uses a structured, hierarchical model, while still allowing for complex addit
 modern attempts, following in the footsteps of what LilyPond set out to create.
 
 
-[Cadenza]: https://codeberg.org/twilit-jack/cadenza
+[Cadenzier]: https://codeberg.org/twilit-jack/cadenzier
 [MNX]: https://github.com/w3c-cg/mnx
 [LilyPond]: https://lilypond.org/

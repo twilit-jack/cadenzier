@@ -31,13 +31,13 @@
      inkscape:deskcolor="#505050"
      inkscape:document-units="px"
      inkscape:zoom="0.67929391"
-     inkscape:cx="1160.7641"
-     inkscape:cy="98.631827"
-     inkscape:window-width="1904"
-     inkscape:window-height="1008"
+     inkscape:cx="808.19214"
+     inkscape:cy="297.3676"
+     inkscape:window-width="1920"
+     inkscape:window-height="1022"
      inkscape:window-x="0"
      inkscape:window-y="0"
-     inkscape:window-maximized="0"
+     inkscape:window-maximized="1"
      inkscape:current-layer="layer1"
      showguides="true" />
   <defs
@@ -1438,10 +1438,10 @@
        style="color-interpolation-filters:sRGB;"
        inkscape:label="Blur"
        id="filter129"
-       x="-0.036557057"
-       y="-0.11060995"
-       width="1.0731141"
-       height="1.2212199">
+       x="-0.030817475"
+       y="-0.11075983"
+       width="1.061635"
+       height="1.2215197">
       <feGaussianBlur
          stdDeviation="8 8"
          result="blur"
@@ -5355,7 +5355,7 @@
     </g>
     <g
        id="g131"
-       transform="translate(-28)">
+       transform="translate(-8)">
       <path
          d="m 925.93307,293.611 c -20.24574,0 -33.12944,-11.03276 -33.12944,-27.27546 0,-27.27546 34.66322,-56.08321 66.87239,-56.08321 20.24575,0 33.12942,11.03273 33.12942,27.27542 0,27.27547 -34.66318,56.08325 -66.87237,56.08325 z"
          fill="currentColor"
@@ -5383,7 +5383,7 @@
     </g>
     <g
        id="g123"
-       transform="matrix(1.3547729,0,0,1.3547729,220.29375,474.02186)">
+       transform="matrix(1.3547729,0,0,1.3547729,240.29375,474.02186)">
       <path
          sodipodi:type="star"
          style="fill:#ffffff;fill-opacity:0.6;stroke:none;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
@@ -5421,7 +5421,7 @@
     </g>
     <g
        id="g59"
-       transform="matrix(1.3547729,0,0,1.3547729,220.29375,474.02186)">
+       transform="matrix(1.3547729,0,0,1.3547729,240.29375,474.02186)">
       <path
          sodipodi:type="star"
          style="fill:#ffffff;fill-opacity:0.6;stroke:none;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
@@ -5459,7 +5459,7 @@
     </g>
     <g
        id="g58"
-       transform="matrix(1.3547729,0,0,1.3547729,220.29375,474.02186)">
+       transform="matrix(1.3547729,0,0,1.3547729,240.29375,474.02186)">
       <path
          sodipodi:type="star"
          style="fill:#ffffff;fill-opacity:0.6;stroke:none;stroke-width:0;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
@@ -5509,35 +5509,35 @@
        transform="matrix(1.0618535,0,0,1.0618535,-76.905953,-15.481909)" />
     <g
        id="g130"
-       transform="translate(-20,20)">
+       transform="translate(-32,20)">
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:241.118px;font-family:Italianno;-inkscape-font-specification:Italianno;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke:#ffffff;stroke-width:1.07166;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1"
-         x="190.59378"
+         x="161.44385"
          y="270.78647"
          id="text1"
          transform="matrix(0.96055131,0,0.13645198,1.0410688,0,0)"><tspan
            sodipodi:role="line"
            id="tspan1"
-           x="190.59378"
+           x="161.44385"
            y="270.78647"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Italianno;-inkscape-font-specification:Italianno;stroke:#ffffff;stroke-width:1.07166;stroke-dasharray:none;stroke-opacity:1">Cadenza</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Italianno;-inkscape-font-specification:Italianno;stroke:#ffffff;stroke-width:1.07166;stroke-dasharray:none;stroke-opacity:1">Cadenzier</tspan></text>
       <text
          xml:space="preserve"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:241.118px;font-family:Italianno;-inkscape-font-specification:Italianno;writing-mode:lr-tb;direction:ltr;fill:#ffffff;stroke:#ffffff;stroke-width:1.07166;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter129)"
          x="190.59378"
          y="270.78647"
          id="text129"
-         transform="matrix(0.96055131,0,0.13645198,1.0410688,0,0)"><tspan
+         transform="matrix(0.96055131,0,0.13645198,1.0410688,-28,0)"><tspan
            sodipodi:role="line"
            id="tspan129"
            x="190.59378"
            y="270.78647"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Italianno;-inkscape-font-specification:Italianno;stroke:#ffffff;stroke-width:1.07166;stroke-dasharray:none;stroke-opacity:1">Cadenza</tspan></text>
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Italianno;-inkscape-font-specification:Italianno;stroke:#ffffff;stroke-width:1.07166;stroke-dasharray:none;stroke-opacity:1">Cadenzier</tspan></text>
     </g>
     <g
        id="g48"
-       transform="matrix(1.4467477,0,0,1.4467477,164.78779,435.44466)">
+       transform="matrix(1.4467477,0,0,1.4467477,184.78779,435.44466)">
       <g
          id="g88-1"
          transform="matrix(13.485743,0,0,13.485743,-280.80805,-362.0894)"
@@ -5848,7 +5848,7 @@
     </g>
     <g
        id="g354"
-       transform="matrix(0.87134747,0,0,0.87134747,459.67146,536.56725)"
+       transform="matrix(0.87134747,0,0,0.87134747,479.67146,536.56725)"
        style="opacity:0.5">
       <path
          sodipodi:type="star"
@@ -5887,7 +5887,7 @@
     </g>
     <g
        id="g356"
-       transform="matrix(0.62850136,0,0,0.62850136,631.34851,272.90944)"
+       transform="matrix(0.62850136,0,0,0.62850136,651.34851,272.90944)"
        style="opacity:0.5">
       <path
          sodipodi:type="star"
@@ -6004,7 +6004,7 @@
     </g>
     <g
        id="g379"
-       transform="matrix(0.52680178,0,0,0.52680178,-131.57472,320.61877)"
+       transform="matrix(0.52680178,0,0,0.52680178,-107.57472,310.61877)"
        style="opacity:0.5">
       <path
          sodipodi:type="star"

@@ -27,7 +27,7 @@ impl Project {
 	const HEADER: &str = "\
 		% LilyPond file generated from CDNZ.\n\
 		% If you see any issues or bugs, write an issue on CDNZ to LilyPond conversion at:\n\
-		%   https://codeberg.org/twilit-jack/cadenza/\n\
+		%   https://codeberg.org/twilit-jack/cadenzier/\n\
 		\\version \"2.26.0\"\n\n";
 
 	pub fn part_to_lilypond(&self, part_name: PartName) -> io::Result<File> {

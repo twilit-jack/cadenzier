@@ -43,7 +43,7 @@ pub struct Metadata {
 	///
 	/// The engraver is the author of the exact layout and encoding of the music, i.e. the CDNZ file.
 	/// This might be the same as the composer or arranger if they're doing their first work via
-	/// CDNZ or Cadenza.
+	/// CDNZ or Cadenzier.
 	pub engraver: PersonInfo,
 
 	/// A description of the piece, typically given by the composer, including thoughts about the

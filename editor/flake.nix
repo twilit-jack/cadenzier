@@ -23,8 +23,8 @@
 				let
 					pkgs = nixpkgs.legacyPackages.${system};
 				in rec {
-					default = cadenza;
-					cadenza = pkgs.callPackage ./default.nix {
+					default = cadenzier;
+					cadenzier = pkgs.callPackage ./default.nix {
 						naersk-lib = naersk.lib.${system};
 					};
 				});
@@ -45,10 +45,10 @@
 				});
 
 			apps = forAllSystems (system: rec {
-				default = cadenza;
-				cadenza = {
+				default = cadenzier;
+				cadenzier = {
 					type = "app";
-					program = "${lib.getBin self.packages.${system}.cadenza}/bin/cadenza";
+					program = "${lib.getBin self.packages.${system}.cadenzier}/bin/cadenzier";
 				};
 			});
 		};

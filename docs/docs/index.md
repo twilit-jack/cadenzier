@@ -3,9 +3,9 @@
 
 # Home
 
-Welcome to the Cadenza Docs!
+Welcome to the Cadenzier Docs!
 
-Here you'll find information regarding the Cadenza editor, and the CDNZ format.
+Here you'll find information regarding the Cadenzier editor, and the CDNZ format.
 
 !!! warning
 

@@ -6,4 +6,4 @@
 //! This is currently a placeholder for future development.
 //!
 //! Additional planned features include using `convert-ly` for being able to use newer LilyPond
-//! versions than Cadenza or CDNZ support.
+//! versions than Cadenzier or CDNZ support.
