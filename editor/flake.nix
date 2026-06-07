@@ -1,5 +1,11 @@
+# INFO: This flake is as of now unmaintained. If you're a Nix user, and see a way to improve this,
+# submit a pull request.
+#
+# I (Twilit Jack) am currently not maintaining this, as I made this only while trying out of Nix and
+# NixOS, and found the system too restrictive, so I hopped back to Arch/EndeavourOS.
+
 {
-	description = "Cadenza music notation editor";
+	description = "A keyboard-centric, batteries-included music notation editor";
 
 	inputs = {
 		nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

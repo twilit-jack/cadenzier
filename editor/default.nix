@@ -1,3 +1,6 @@
+# INFO: This file is as of now unmaintained. If you're a Nix user, and see a way to improve this,
+# submit a pull request.
+
 { lib
 , pkg-config
 , naersk-lib
