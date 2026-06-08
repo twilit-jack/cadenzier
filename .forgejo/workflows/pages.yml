@@ -24,6 +24,6 @@ jobs:
       - name: Deploy to Pages
         uses: https://codeberg.org/git-pages/action@v2
         with:
-          site: 'https://${{ forge.repository_owner }}.codeberg.page/cadenza/'
+          site: 'https://${{ forge.repository_owner }}.codeberg.page/cadenzier/'
           token: ${{ forge.token }}
           source: docs/site/
