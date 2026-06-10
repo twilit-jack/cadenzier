@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/branding/icon.png" width="140px" />
+<img src="icon.png" width="140px" />
 
 # Cadenzier
 
@@ -17,12 +17,19 @@ The free and open-source music notation editor you've been waiting for.
 - A modern interface and backend, powered by Rust and the [iced] crate.
 - Priority given to the offline experience, and not the cloud.
 
+> [!IMPORTANT]
+> **Main repository is at Codeberg.**
+>
+> Development is happening **[here][Repo]**.
+
 **Please note that this project is in its early stages, and that there is little to show yet.**
 
 You can [read the docs][Docs] for more info about the project.
+
 
 [LilyPond]: https://lilypond.org/
 [Sfizz]: https://sfztools.github.io/sfizz/
 [VSCO 2: CE]: https://versilian-studios.com/vsco-community/
 [iced]: https://iced.rs/
 [Docs]: https://twilit-jack.codeberg.page/cadenzier/
+[Repo]: https://codeberg.org/twilit-jack/cadenzier/
