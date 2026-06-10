@@ -8,6 +8,11 @@ The free and open-source music notation editor you've been waiting for.
 
 </div>
 
+> [!IMPORTANT]
+> **Main repository is at Codeberg.**
+>
+> Development is happening **[here][Repo]**.
+
 ## Planned features
 
 - Fully FOSS, forever.
@@ -16,11 +21,6 @@ The free and open-source music notation editor you've been waiting for.
 - Gorgeous audio via [Sfizz] and the [VSCO 2: CE] SFZ library.
 - A modern interface and backend, powered by Rust and the [iced] crate.
 - Priority given to the offline experience, and not the cloud.
-
-> [!IMPORTANT]
-> **Main repository is at Codeberg.**
->
-> Development is happening **[here][Repo]**.
 
 **Please note that this project is in its early stages, and that there is little to show yet.**
 
